@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# npm ignore
+.npmignore
+
+# Optional npm cache directory
+.npm
+
+# Windows Scripts
+*.bat
+
+# Dependency directories
+node_modules/
+package-lock.json
