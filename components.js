@@ -1,5 +1,3 @@
-import {oneIcons} from './oneIcons.js'; //TODO: Possible future improvement to reduce bundle size is to create oneIcons as a separate optional folder 
-//and add option to choose the icon font during app setup. Similar to readFlavor('default') for function parameter, readIconFont('default') would be required.
 import {matchUrl, Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles} from '@onejs-dev/onecore';
 
 //=============================================================================
