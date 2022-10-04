@@ -1,6 +1,6 @@
 {
   "name": "@onejs-dev/components",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Web and native components for oneJS apps.",
   "repository": {
     "type": "git",
@@ -22,13 +22,11 @@
     "@react-native-picker/picker": "^2.4.4",
     "react-native-modal-selector": "^2.1.1",
     "react-native-svg": "^12.3.0"
-    
   },
-  "browser": {    
+  "browser": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "@emotion/css": "^11.10.0",
-
     "expo-linear-gradient": false,
     "@react-native-async-storage/async-storage": false,
     "@react-native-community/datetimepicker": false,
@@ -36,6 +34,6 @@
     "@react-native-masked-view/masked-view": false,
     "@react-native-picker/picker": false,
     "react-native-modal-selector": false,
-    "react-native-svg": false   
+    "react-native-svg": false
   }
 }
