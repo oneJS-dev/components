@@ -2,7 +2,6 @@
   "name": "@onejs-dev/components",
   "version": "0.0.5",
   "description": "Web and native components for oneJS apps.",
-  "main": "components.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oneJS-dev/components.git"
@@ -19,7 +18,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "native": {
+  "react-native": {
     "@emotion/css": false,
     "react": false,
     "react-dom": false,
