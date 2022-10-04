@@ -1,6 +1,6 @@
 {
   "name": "@onejs-dev/components",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Web and native components for oneJS apps.",
   "main": "components.js",
   "react-native": "components.native.js",
@@ -16,7 +16,6 @@
   "homepage": "https://oneJS.dev",
   "dependencies": {
     "@onejs-dev/core": "^0.0.3",
-    
     "expo-linear-gradient": "^11.4.0",
     "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/datetimepicker": "^6.3.2",
@@ -25,7 +24,6 @@
     "@react-native-picker/picker": "^2.4.4",
     "react-native-modal-selector": "^2.1.1",
     "react-native-svg": "^12.3.0",
-
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "@emotion/css": "^11.10.0"
