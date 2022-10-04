@@ -1,5 +1,5 @@
 //ONEJS Internal Imports
-import {BaseComponent, Component, readFlavor, readIconGradient, positionContent, generateShadow, mergeStyles} from '@onejs-dev/onecore';
+import {BaseComponent, Component, readFlavor, readIconGradient, positionContent, generateShadow, mergeStyles} from '@onejs-dev/core';
 
 //React Imports
 import {ActivityIndicator as activityIndicator, Button as button, FlatList as flatList, Image as image, 

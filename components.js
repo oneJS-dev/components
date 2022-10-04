@@ -1,4 +1,4 @@
-import {matchUrl, Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles} from '@onejs-dev/onecore';
+import {matchUrl, Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles} from '@onejs-dev/core';
 
 //=============================================================================
 // STANDARD COMPONENTS:
