@@ -2,6 +2,8 @@
   "name": "@onejs-dev/components",
   "version": "0.0.7",
   "description": "Web and native components for oneJS apps.",
+  "main": "components.js",
+  "react-native": "components.native.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oneJS-dev/components.git"
@@ -13,7 +15,10 @@
   },
   "homepage": "https://oneJS.dev",
   "dependencies": {
+    //Common
     "@onejs-dev/core": "^0.0.3",
+
+    //React Native
     "expo-linear-gradient": "^11.4.0",
     "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/datetimepicker": "^6.3.2",
@@ -21,19 +26,10 @@
     "@react-native-masked-view/masked-view": "^0.2.7",
     "@react-native-picker/picker": "^2.4.4",
     "react-native-modal-selector": "^2.1.1",
-    "react-native-svg": "^12.3.0"
-  },
-  "browser": {
+    "react-native-svg": "^12.3.0",
+    //React Web
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@emotion/css": "^11.10.0",
-    "expo-linear-gradient": false,
-    "@react-native-async-storage/async-storage": false,
-    "@react-native-community/datetimepicker": false,
-    "@react-native-community/slider": false,
-    "@react-native-masked-view/masked-view": false,
-    "@react-native-picker/picker": false,
-    "react-native-modal-selector": false,
-    "react-native-svg": false
+    "@emotion/css": "^11.10.0"
   }
 }
