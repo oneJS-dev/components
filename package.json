@@ -1,6 +1,6 @@
 {
   "name": "@onejs-dev/components",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Web and native components for oneJS apps.",
   "repository": {
     "type": "git",
