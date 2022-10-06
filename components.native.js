@@ -1,5 +1,5 @@
 //ONEJS Internal Imports
-import {BaseComponent, Component, readFlavor, readIconGradient, positionContent, generateShadow, mergeStyles} from '@onejs-dev/core';
+import {BaseComponent, Component, readFlavor, readIconGradient, positionContent, mergeStyles} from '@onejs-dev/core';
 
 //React Imports
 import {ActivityIndicator as _RNActivityIndicator, Button as _RNButton, FlatList as _RNFlatList, Image as _RNImage, 
@@ -336,7 +336,7 @@ export const View = Component('View', true, ({visible=true, content={h:'left', v
             display: visible ? 'flex' : 'none', 
             flexGrow: self?.expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
             flexShrink: self?.shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
-            alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
+            // alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
         };
     }
     const outerStyle = {//Outer style. When there is a gradient it is applied to the Gradient itself.
@@ -344,7 +344,7 @@ export const View = Component('View', true, ({visible=true, content={h:'left', v
         borderStyle: flavor?.borderStyle ?? 'solid',
         borderColor: flavor?.borderColor ?? 'transparent',
         borderRadius: flavor?.radius ?? 0,
-        ...generateShadow(flavor?.shadow ?? 0),
+        ...flavor?.shadow ?? 0,
         ...selfStyle
     }
     const innerStyle = {//Inner style for the View
@@ -400,7 +400,7 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
     const flavorStyle = {
         color: flavor?.textGradient ? 'transparent' : (flavor?.textColor ?? '#333'),
         fontSize: flavor?.textSize ?? 16,
-        fontFamily: flavor?.textFamily ?? 'AvenirNext, Arial, Sans-Serif',
+        fontFamily: flavor?.textFamily ?? undefined,
         fontWeight: flavor?.textWeight ?? 'normal',
         // textAlign: 'center', //default is 'auto'
         // textAlignVertical: 'center', //default is 'auto'
@@ -408,7 +408,7 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
         marginBottom: 0,
         marginLeft: 0,
         marginRight: 0,
-        lineHeight: 1.5
+        // lineHeight: 1.5
     }
     attributes['style'] = mergeStyles(flavorStyle, attributes['style']);
     if(!flavor?.textGradient) return RNText(attributes)(structure);
@@ -448,7 +448,7 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
 * ```
 * @returns {ReactElement} - The element corresponding to the input.
 */
-export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) => {   
+export const Input = ({type, options, title, titleStyle, icon, iconStyle, content, flavor=readFlavor('default'), ...attributes}={}) => {   
     //Set a consistent behaviour for onChange attribute
     if(attributes['onChange']) {
         if(type === 'checkbox' || type === 'switch' || type === 'range' || type === 'date' || type === 'time' || type === 'datetime') {//Non-TextInputs
@@ -460,23 +460,31 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
             attributes['onListChange'] = onListChange(attributes['onChange']);
         }
         else {//TextInput
-            attributes['onChangeText'] = attributes['onChange'];
-            let flavorStyle = {
-                color: flavor?.textColor ?? '#333',
-                fontSize: flavor?.textSize ?? 16,
-                fontFamily: flavor?.textFamily ?? 'AvenirNext, Arial, Sans-Serif',
-                fontWeight: flavor?.textWeight ?? 'normal',
-                backgroundColor: flavor?.backgroundColor ?? 'transparent',
-                borderWidth: flavor?.borderWidth ?? 1,
-                borderStyle: flavor?.borderStyle ?? 'solid',
-                borderColor: flavor?.borderColor ?? '#ccc',
-                borderRadius: flavor?.radius ?? 0,
-                paddingLeft: 10,
-                ...generateShadow(flavor?.shadow ?? 0)                
-            }
-            attributes['style'] = mergeStyles(flavorStyle, attributes['style']);    
+            attributes['onChangeText'] = attributes['onChange'];  
         }
         delete attributes['onChange'];
+    }
+    //Setup text input style
+    if(!type || type === 'text' || type === 'number' || type === 'email' || type === 'url' || type === 'tel' || 
+        type === 'password' || type === 'new-password' || type === 'textarea' || type === 'list' || type === 'button') {
+        const textInputStyle = {
+            color: flavor?.textColor ?? '#666',
+            fontSize: flavor?.textSize ?? 16,
+            fontFamily: flavor?.textFamily ?? undefined,
+            fontWeight: flavor?.textWeight ?? 'normal',
+            backgroundColor: flavor?.backgroundColor ?? 'white',
+            borderWidth: flavor?.borderWidth ?? 1,
+            borderStyle: flavor?.borderStyle ?? 'solid',
+            borderColor: flavor?.borderColor ?? '#ccc',
+            borderRadius: flavor?.radius ?? 0,
+            minHeight: 50,
+            paddingTop: 10,
+            paddingBottom: 10,
+            paddingLeft: 15,
+            paddingRight: 15,
+            ...flavor?.shadow ?? 0                
+        }
+        attributes['style'] = mergeStyles(textInputStyle, attributes['style']);  
     }
     if(!type || type === 'text') {//Regular TextInput
         return RNTextInput(attributes);
@@ -508,49 +516,14 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
 
     //Button Input: It can use same properties as View
     else if(type === 'button') {
-        const buttonLayoutStyle = {
-            height: 40,    
-        }
-        attributes['style'] = mergeStyles(buttonLayoutStyle, attributes['style']);    
-        if(flavor) {//Modify flavor for Icon and Text
-            attributes['flavor'] = {...flavor};//Copy original flavor for the View
-            flavor.textColor = flavor.primaryColor;
-            flavor.textGradient = flavor.primaryGradient;
-            flavor.backgroundGradient = undefined;
-            flavor.backgroundColor = 'transparent';
-            flavor.borderWidth = 0;
-        }
+        content = content ?? {h: 'center', v: 'center', direction: 'row', gap: 10, wrap: false};//Positions Title and Icon
+        const url = attributes['url']; delete attributes['url'];
         const onPress = attributes['onPress'] ?? (attributes['onClick'] ?? undefined);
-        delete attributes['onPress'];
-        delete attributes['onClick'];
-        const title = attributes['title'] ?? '';                //Title string
-        delete attributes['title'];
-        const textStyle = attributes['textStyle'] ?? '';        //Title style
-        delete attributes['textStyle'];
-        const icon = attributes['icon'] ?? undefined;           //Icon from icon font
-        delete attributes['icon'];
-        // const iconFont = attributes['iconFont'] ?? undefined;   //Icon font
-        // delete attributes['iconFont'];
-        // const iconFile = attributes['iconFile'] ?? undefined;   //Icon from file
-        // delete attributes['iconFile'];
-        const iconStyle = attributes['iconStyle'] ?? undefined; //Icon style
-        delete attributes['iconStyle'];
-        // const iconSize = attributes['size'] ?? undefined;       //Icon size
-        // delete attributes['size'];
-        const content = attributes['content'] ?? {h: 'center', v: 'center', direction: 'row'};//Positions Title and Icon
-        delete attributes['content'];
-        if(attributes['link']) {//Link to change current url
-            attributes['url'] = {link: attributes['link']};
-            delete attributes['link'];
-            return View({content: content, ...attributes})([
-                (icon) && Icon({icon: icon, style: iconStyle, flavor: attributes['flavor']}), 
-                Text({style: textStyle, flavor: attributes['flavor']})(title)
-            ]);
-        }
-        return RNTouchableOpacity({onPress: onPress})(View({content: content, ...attributes})([
-            (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}), 
-            Text({style: textStyle, flavor: flavor})(title)
-        ]))
+        return RNTouchableOpacity({onPress: onPress, url: url})(
+            View({content: content, ...attributes})([
+                (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}), 
+                Text({style: titleStyle, flavor: flavor})(title)
+        ]));
         //Note: elevation/shadow does not work well with TouchableOpacity, opacity is inconsistent when pressed 
     }
 
@@ -610,20 +583,23 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
     Useful properties: data, onChange, onModalOpen, onModalClose, visible, closeOnChange, initValue, cancelText, disabled, listType, animationType, styling options...
     */
     else if(type === 'list') {        
-        let listStyle = {
-            color: flavor?.textColor ?? '#333',
+        //Style
+        const textStyle = {
+            color: flavor?.textColor ?? '#666',
             fontSize: flavor?.textSize ?? 16,
-            fontFamily: flavor?.textFamily ?? 'AvenirNext, Arial, Sans-Serif',
+            fontFamily: flavor?.textFamily ?? undefined,
             fontWeight: flavor?.textWeight ?? 'normal',
-            backgroundColor: flavor?.backgroundColor ?? 'transparent',
-            borderWidth: flavor?.borderWidth ?? 0,
-            borderStyle: flavor?.borderStyle ?? 'solid',
-            borderColor: flavor?.borderColor ?? 'none',
-            borderRadius: flavor?.radius ?? 0,
-            // textDecorationLines: 'none',
-            paddingLeft: 10
-        }
-        attributes['style'] = mergeStyles(listStyle, attributes['style']);
+        };
+        const selectStyle = {padding: 0, borderWidth: 0, borderColor: 'transparent'};
+        const selectTextStyle = textStyle; 
+        const selectedItemTextStyle = {...textStyle, color: flavor?.primaryColor ?? 'blue'};
+        const optionTextStyle = textStyle;
+        const initValueTextStyle = textStyle;
+        const cancelStyle = { backgroundColor: flavor?.dangerColor ?? 'red'};
+        const cancelTextStyle = {...textStyle, color: 'white'};
+
+        const value = attributes['value']; delete attributes['value'];
+        //const cancelText = 'Cancel'; //Text for the cancel button
 
         //Modal Selector does not implement onBlur and onFocus methods. The closest event functions are onModalOpen and onModalClose
         if(attributes['onFocus']) {attributes['onModalOpen'] = attributes['onFocus']; delete attributes['onFocus'];}
@@ -632,14 +608,15 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
         //onChange event returns options object: {key: 'value1', label: 'label1'}. To make it consistent with web only keys are returned
         if(attributes['onListChange']) {attributes['onChange'] = attributes['onListChange']; delete attributes['onListChange'];}
 
-        if(attributes['options']) {
+        if(options) {
             //options (array): ['Volvo', 'Mercedes', 'Rolex', 'Cartier'];                           //For simple scenarios    
             //options (array): [{value: 'vol', label: 'Volvo'}, {value: 'mer', label: 'Mercedes'}]; //This is the standard definition 
-            attributes['data'] = attributes['options'].map(item => {return {key: (typeof item === 'string') ? item : item.value, 
+            attributes['data'] = options.map(item => {return {key: (typeof item === 'string') ? item : item.value, 
                                                                             label: (typeof item === 'string') ? item : item.label}});
-            delete attributes['options'];
         }
-        return ListPicker(attributes);
+        return ListPicker({selectedKey: value, backdropPressToClose: true, selectStyle: selectStyle, selectTextStyle: selectTextStyle, 
+            selectedItemTextStyle: selectedItemTextStyle, optionTextStyle: optionTextStyle, initValueTextStyle: initValueTextStyle, 
+            cancelStyle: cancelStyle, cancelTextStyle: cancelTextStyle, ...attributes});
     }
 
     /*
@@ -702,5 +679,5 @@ export const Icon = Component('Icon', false, ({icon, size=32, raised, flavor=rea
     attributes['style'] = mergeStyles(backgroundStyle, attributes['style']);
     
     const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
-    return View({content: {h: 'center', v: 'center'}, flavor: raised ? flavor : undefined, ...attributes})(Xml({xml: iconWithGradient, style: iconStyle}));
+    return View({content: {h: 'center', v: 'center', wrap: false}, flavor: raised ? flavor : undefined, ...attributes})(Xml({xml: iconWithGradient, style: iconStyle}));
 });

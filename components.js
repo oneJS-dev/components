@@ -583,7 +583,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             borderColor: flavor?.neutralColor ?? '#D9DADC',             //Border color
             border: '1px solid ',         
             borderRadius: '50px',
-            boxShadow: 'inset -20px 0 0 0 #fff',                        //track color when false
+            boxShadow: 'inset -20px 0 0 0 #fff',                        //Track color when false
             transitionDuration: '0.4s',
             ':after': {
                 'content': '""',
@@ -620,7 +620,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             padding: '10px 15px',
             cursor: 'pointer',
             transitionDuration: '0.4s',
-            minHeight: 25,
+            minHeight: 40,
             ':hover': {
                 filter: 'brightness(110%)',
             },
