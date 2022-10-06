@@ -2,14 +2,14 @@
 import {BaseComponent, Component, readFlavor, readIconGradient, positionContent, generateShadow, mergeStyles} from '@onejs-dev/core';
 
 //React Imports
-import {ActivityIndicator as activityIndicator, Button as button, FlatList as flatList, Image as image, 
-    ImageBackground as imageBackground, KeyboardAvoidingView as keyboardAvoidingView, Modal as modal, 
-    Pressable as pressable, RefreshControl as refreshControl, ScrollView as scrollView, SectionList as sectionList, 
-    StatusBar as statusBar, Switch as RNSwitch, Text as text, TextInput as textInput, TouchableHighlight as touchableHighlight, 
-    TouchableOpacity as touchableOpacity, TouchableWithoutFeedback as touchableWithoutFeedback, View as view, 
-    VirtualizedList as virtualizedList, DrawerLayoutAndroid as drawerLayoutAndroid, 
-    TouchableNativeFeedback as touchableNativeFeedback, InputAccessoryView as inputAccessoryView, 
-    SafeAreaView as safeAreaView,
+import {ActivityIndicator as _RNActivityIndicator, Button as _RNButton, FlatList as _RNFlatList, Image as _RNImage, 
+    ImageBackground as _RNImageBackground, KeyboardAvoidingView as _RNKeyboardAvoidingView, Modal as _RNModal, 
+    Pressable as _RNPressable, RefreshControl as _RNRefreshControl, ScrollView as _RNScrollView, SectionList as _RNSectionList, 
+    StatusBar as _RNStatusBar, Switch as _RNSwitch, Text as _RNText, TextInput as _RNTextInput, TouchableHighlight as _RNTouchableHighlight, 
+    TouchableOpacity as _RNTouchableOpacity, TouchableWithoutFeedback as _RNTouchableWithoutFeedback, View as _RNView, 
+    VirtualizedList as _RNVirtualizedList, DrawerLayoutAndroid as _RNDrawerLayoutAndroid, 
+    TouchableNativeFeedback as _RNTouchableNativeFeedback, InputAccessoryView as _RNInputAccessoryView, 
+    SafeAreaView as _RNSafeAreaView,
     Platform, Animated, Easing} from 'react-native';
 import React from 'react';
 
@@ -38,31 +38,31 @@ import ModalSelector from 'react-native-modal-selector'; //https://github.com/pe
 //=============================================================================
 
 //React Native Components
-export const ActivityIndicator = BaseComponent('ActivityIndicator', false, activityIndicator);
-export const Button = BaseComponent('Button', false, button);
-export const FlatList = BaseComponent('FlatList', false, flatList);
-export const Image = BaseComponent('Image', false, image);
-export const ImageBackground = BaseComponent('ImageBackground', true, imageBackground);
-export const KeyboardAvoidingView = BaseComponent('KeyboardAvoidingView', true, keyboardAvoidingView);
-export const Modal = BaseComponent('Modal', true, modal);
-export const Pressable = BaseComponent('Pressable', true, pressable);
-export const RefreshControl = BaseComponent('RefreshControl', false, refreshControl);
-export const ScrollView = BaseComponent('ScrollView', true, scrollView);
-export const SectionList = BaseComponent('SectionList', false, sectionList);
-export const StatusBar = BaseComponent('StatusBar', false, statusBar);
-export const Switch = BaseComponent('Switch', false, RNSwitch);
-export const RNText = BaseComponent('RNText', true, text);
-export const TextInput = BaseComponent('TextInput', false, textInput);
-export const TouchableHighlight = BaseComponent('TouchableHighlight', true, touchableHighlight);
-export const TouchableOpacity = BaseComponent('TouchableOpacity', true, touchableOpacity);
-export const TouchableWithoutFeedback = BaseComponent('TouchableWithoutFeedback', true, touchableWithoutFeedback);
-export const RNView = BaseComponent('RNView', true, view);
-export const VirtualizedList = BaseComponent('VirtualizedList', false, virtualizedList);
-export const DrawerLayoutAndroid = BaseComponent('DrawerLayoutAndroid', true, drawerLayoutAndroid);
-export const TouchableNativeFeedback = BaseComponent('TouchableNativeFeedback', true, touchableNativeFeedback);
-export const InputAccessoryView = BaseComponent('InputAccessoryView', true, inputAccessoryView);
-export const SafeAreaView = BaseComponent('SafeAreaView', true, safeAreaView);
-export const AnimatedView = BaseComponent('Animated.View', true, Animated.View);
+export const RNActivityIndicator = BaseComponent('ActivityIndicator', false, _RNActivityIndicator);
+export const RNButton = BaseComponent('Button', false, _RNButton);
+export const RNFlatList = BaseComponent('FlatList', false, _RNFlatList);
+export const RNImage = BaseComponent('Image', false, _RNImage);
+export const RNImageBackground = BaseComponent('ImageBackground', true, _RNImageBackground);
+export const RNKeyboardAvoidingView = BaseComponent('KeyboardAvoidingView', true, _RNKeyboardAvoidingView);
+export const RNModal = BaseComponent('Modal', true, _RNModal);
+export const RNPressable = BaseComponent('Pressable', true, _RNPressable);
+export const RNRefreshControl = BaseComponent('RefreshControl', false, _RNRefreshControl);
+export const RNScrollView = BaseComponent('ScrollView', true, _RNScrollView);
+export const RNSectionList = BaseComponent('SectionList', false, _RNSectionList);
+export const RNStatusBar = BaseComponent('StatusBar', false, _RNStatusBar);
+export const RNSwitch = BaseComponent('Switch', false, _RNSwitch);
+export const RNText = BaseComponent('_RNText', true, _RNText);
+export const RNTextInput = BaseComponent('TextInput', false, _RNTextInput);
+export const RNTouchableHighlight = BaseComponent('TouchableHighlight', true, _RNTouchableHighlight);
+export const RNTouchableOpacity = BaseComponent('TouchableOpacity', true, _RNTouchableOpacity);
+export const RNTouchableWithoutFeedback = BaseComponent('TouchableWithoutFeedback', true, _RNTouchableWithoutFeedback);
+export const RNView = BaseComponent('_RNView', true, _RNView);
+export const RNVirtualizedList = BaseComponent('VirtualizedList', false, _RNVirtualizedList);
+export const RNDrawerLayoutAndroid = BaseComponent('DrawerLayoutAndroid', true, _RNDrawerLayoutAndroid);
+export const RNTouchableNativeFeedback = BaseComponent('TouchableNativeFeedback', true, _RNTouchableNativeFeedback);
+export const RNInputAccessoryView = BaseComponent('InputAccessoryView', true, _RNInputAccessoryView);
+export const RNSafeAreaView = BaseComponent('SafeAreaView', true, _RNSafeAreaView);
+export const RNAnimatedView = BaseComponent('Animated.View', true, Animated.View);
 
 //External Compoenets
 const ListPicker = BaseComponent('ModalSelector', false, ModalSelector);    //https://github.com/peacechen/react-native-modal-selector 
@@ -271,10 +271,13 @@ const getAnimationStyle  = (animationValue, keyframes) => {
 * @param {Function} onActiveChange - The function called when the 'active' property is modified due to url changes. 
 * It can be used to update the 'active' state variable.
 * @param {Content} content - The configuration specifying the positioning of the component's content.
-* @param {Number} expand - Ability for a flex component to grow if there is extra space (0 CSS default). The greater the number, the greater the expansion 
-* with respect to other sibling components able to expand. 0 means the component is unable to expand.
-* @param {Number} shrink - Ability for a flex component to shrink if there is not enough space (1 CSS default). The greater the number, the greater the shrinkage 
-* with respect to other sibling components able to shrink. 0 means the component is unable to shrink.
+* @param {Object} self - The configuration specifying the positioning of the component itself with respect to its siblings.
+*   - expand: Ability for a flex component to grow if there is extra space (0 CSS default). The greater the number, the greater the expansion 
+*             with respect to other sibling components able to expand. 0 means the component is unable to expand.
+*   - shrink: Ability for a flex component to shrink if there is not enough space (1 CSS default). The greater the number, the greater the shrinkage 
+*             with respect to other sibling components able to shrink. 0 means the component is unable to shrink.
+*   - align:  It allows to override the transversal (perpendicular to the content direction) positioning set by the parent with the 'content' property.
+*             E.g. If the parent sets the content to be aligned in a row on top, with the self property child element can override this behaviour.
 * @param {Array<String> | Array<Object> | Map} animation - The animation to be executed on the component for the different property value changes.
 * @param {Url} [url] - The configuration structure required to make routing possible. It enables displaying or hiding the View based on the url, adding an
 * 'active' attribute or making it clickable redirecting the user to the chosen url.
@@ -290,7 +293,7 @@ const getAnimationStyle  = (animationValue, keyframes) => {
 * ```
 * @returns {ReactElement} - The element corresponding to the View.
 */
-export const View = Component('View', true, ({visible=true, content={h:'left', v:'top'}, expand, shrink, animation, url, flavor, ...attributes}={}) => structure => {
+export const View = Component('View', true, ({visible=true, content={h:'left', v:'top'}, self, animation, url, flavor, ...attributes}={}) => structure => {
     //Animations module
     let animationValue;                  //The animation value being interpolated. Being a useRef object persists its value even if the function is called with different parameters.
     let selectedKeyframes;              //State variable that stores the keyframes used during the animation. This allows animation to be changed as an input parameter.
@@ -321,39 +324,48 @@ export const View = Component('View', true, ({visible=true, content={h:'left', v
     }
 
     //Final Style
-    const positionStyle = positionContent(content);
+    const externalDisplay = attributes['style']?.display ?? 'flex';
+    let contentStyle = {};
+    let selfStyle = {};
+    if(externalDisplay === 'flex') { //Only for 'flex' display property
+        contentStyle = {
+            display: visible ? 'flex' : 'none',
+            ...positionContent(content)
+        }
+        selfStyle = {
+            display: visible ? 'flex' : 'none', 
+            flexGrow: self?.expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
+            flexShrink: self?.shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
+            alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
+        };
+    }
     const outerStyle = {//Outer style. When there is a gradient it is applied to the Gradient itself.
-        borderColor: flavor?.borderColor ?? 'none',
         borderWidth: flavor?.borderWidth ?? 0,
+        borderStyle: flavor?.borderStyle ?? 'solid',
+        borderColor: flavor?.borderColor ?? 'transparent',
         borderRadius: flavor?.radius ?? 0,
-        flexGrow: expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
-        flexShrink: shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).
-        ...generateShadow(flavor?.elevation ?? 0),
+        ...generateShadow(flavor?.shadow ?? 0),
+        ...selfStyle
     }
     const innerStyle = {//Inner style for the View
         backgroundColor: flavor?.backgroundGradient ? 'transparent' : (flavor?.backgroundColor ?? 'transparent'),
-        borderRadius: flavor?.radius ?? 0,
-        flexGrow: expand ?? 0,              
-        flexShrink: shrink ?? 1,                
-    }
-    const finalStyle = {
-        ...innerStyle,
-        ...positionStyle,
-        ...animationStyle
-    }  
-    attributes['style'] = flavor?.backgroundGradient ? mergeStyles(finalStyle, attributes['style']) : mergeStyles(finalStyle, outerStyle, attributes['style']);
+        borderRadius: flavor?.radius ?? 0,     
+        ...contentStyle,
+        ...animationStyle      
+    } 
+    attributes['style'] = flavor?.backgroundGradient ? mergeStyles(innerStyle, attributes['style']) : mergeStyles(innerStyle, outerStyle, attributes['style']);
 
     //Final Structure
     let finalStructure;
 
     if(animation) {//In case of animation
-        if(animation.visible) finalStructure = AnimatedView({visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes})(isVisible ? structure : null);
-        else finalStructure = AnimatedView({visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes})(visible ? structure : null) ;
+        if(animation.visible) finalStructure = RNAnimatedView({visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes})(isVisible ? structure : null);
+        else finalStructure = RNAnimatedView({visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes})(visible ? structure : null) ;
     }
     else finalStructure = RNView({visible: visible, ...attributes})(visible ? structure : null);
     
     if(flavor?.backgroundGradient) finalStructure = Gradient({...flavor.backgroundGradient, style: outerStyle})(finalStructure);//In case of backgroundGradient
-    if(url) finalStructure = TouchableOpacity({url: url})(finalStructure);//In case of url links
+    if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);//In case of url links
     
     return finalStructure;
 });
@@ -388,10 +400,15 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
     const flavorStyle = {
         color: flavor?.textGradient ? 'transparent' : (flavor?.textColor ?? '#333'),
         fontSize: flavor?.textSize ?? 16,
-        fontFamily: flavor?.textFamily ?? undefined,
+        fontFamily: flavor?.textFamily ?? 'AvenirNext, Arial, Sans-Serif',
         fontWeight: flavor?.textWeight ?? 'normal',
         // textAlign: 'center', //default is 'auto'
         // textAlignVertical: 'center', //default is 'auto'
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        lineHeight: 1.5
     }
     attributes['style'] = mergeStyles(flavorStyle, attributes['style']);
     if(!flavor?.textGradient) return RNText(attributes)(structure);
@@ -434,7 +451,7 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
 export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) => {   
     //Set a consistent behaviour for onChange attribute
     if(attributes['onChange']) {
-        if(type === 'checkbox' || type === 'range' || type === 'date' || type === 'time' || type === 'datetime') {//Non-TextInputs
+        if(type === 'checkbox' || type === 'switch' || type === 'range' || type === 'date' || type === 'time' || type === 'datetime') {//Non-TextInputs
             attributes['onValueChange'] = attributes['onChange'];
         }
         else if (type === 'list') {
@@ -447,33 +464,34 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
             let flavorStyle = {
                 color: flavor?.textColor ?? '#333',
                 fontSize: flavor?.textSize ?? 16,
-                fontFamily: flavor?.textFamily ?? undefined,
+                fontFamily: flavor?.textFamily ?? 'AvenirNext, Arial, Sans-Serif',
                 fontWeight: flavor?.textWeight ?? 'normal',
                 backgroundColor: flavor?.backgroundColor ?? 'transparent',
-                borderColor: flavor?.borderColor ?? 'none',
-                borderWidth: flavor?.borderWidth ?? 0,
+                borderWidth: flavor?.borderWidth ?? 1,
+                borderStyle: flavor?.borderStyle ?? 'solid',
+                borderColor: flavor?.borderColor ?? '#ccc',
                 borderRadius: flavor?.radius ?? 0,
                 paddingLeft: 10,
-                ...generateShadow(flavor?.elevation ?? 0)                
+                ...generateShadow(flavor?.shadow ?? 0)                
             }
             attributes['style'] = mergeStyles(flavorStyle, attributes['style']);    
         }
         delete attributes['onChange'];
     }
     if(!type || type === 'text') {//Regular TextInput
-        return TextInput(attributes);
+        return RNTextInput(attributes);
     } 
-    //Standard RN TextInput-s
-    else if(type === 'number') return TextInput({keyboardType: 'numeric', textContentType: 'newPassword', ...attributes});
-    else if(type === 'email') return TextInput({keyboardType: 'email-address', autoComplete: 'email', textContentType: 'emailAddress', ...attributes});
-    else if(type === 'url') return TextInput({keyboardType: 'url', textContentType: 'URL', ...attributes});
-    else if(type === 'tel') return TextInput({keyboardType: 'phone-pad', autoComplete: 'tel', textContentType: 'telephoneNumber', ...attributes});
+    //Standard RN RNTextInput-s
+    else if(type === 'number') return RNTextInput({keyboardType: 'numeric', textContentType: 'newPassword', ...attributes});
+    else if(type === 'email') return RNTextInput({keyboardType: 'email-address', autoComplete: 'email', textContentType: 'emailAddress', ...attributes});
+    else if(type === 'url') return RNTextInput({keyboardType: 'url', textContentType: 'URL', ...attributes});
+    else if(type === 'tel') return RNTextInput({keyboardType: 'phone-pad', autoComplete: 'tel', textContentType: 'telephoneNumber', ...attributes});
     /*(ios only) paswordRules: 
         When using textContentType as newPassword on iOS we can let the OS know the minimum requirements of the 
         password so that it can generate one that will satisfy them.
     */
-    else if(type === 'password') return TextInput({autoComplete: 'password', textContentType: 'password', secureTextEntry: true, ...attributes});
-    else if(type === 'new-password') return TextInput({autoComplete: 'password-new', textContentType: 'newPassword', secureTextEntry: true, ...attributes});//TODO: Insert validations
+    else if(type === 'password') return RNTextInput({autoComplete: 'password', textContentType: 'password', secureTextEntry: true, ...attributes});
+    else if(type === 'new-password') return RNTextInput({autoComplete: 'password-new', textContentType: 'newPassword', secureTextEntry: true, ...attributes});//TODO: Insert validations
   
     /*
     RN multiline: It is important to note that this aligns the text to the top on iOS, and centers it on Android. 
@@ -485,7 +503,7 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
         if(attributes['style'] == null) attributes['style'] = textAreaStyle;
         else if(Array.isArray(attributes['style'])) attributes['style'].unshift(textAreaStyle);
         else if(typeof attributes['style'] === 'object') attributes['style'] = {...textAreaStyle, ...attributes['style']}; 
-        return TextInput({multiline: true, numberOfLines: (attributes['numberOfLines'] ? attributes['numberOfLines'] : 5), ...attributes});
+        return RNTextInput({multiline: true, numberOfLines: (attributes['numberOfLines'] ? attributes['numberOfLines'] : 5), ...attributes});
     } 
 
     //Button Input: It can use same properties as View
@@ -529,7 +547,7 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
                 Text({style: textStyle, flavor: attributes['flavor']})(title)
             ]);
         }
-        return TouchableOpacity({onPress: onPress})(View({content: content, ...attributes})([
+        return RNTouchableOpacity({onPress: onPress})(View({content: content, ...attributes})([
             (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}), 
             Text({style: textStyle, flavor: flavor})(title)
         ]))
@@ -540,11 +558,11 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
     Checkbox uses RN Switch:
     <Switch trackColor={{ false: 'grey', true: 'blue' }} thumbColor={isEnabled ? 'yellow' : "white"} ios_backgroundColor='black' onValueChange={toggleSwitch} value={isEnabled}/>
     */
-    else if(type === 'checkbox'){
-        let trackColor = {'false': '#999', 'true': flavor?.primaryColor ?? 'blue'};
-        let ios_backgroundColor = '#999'; //Equivalent to 'false' trackColor
-        let thumbColor = "#f1f1f1";
-        return Switch({trackColor: trackColor, ios_backgroundColor: ios_backgroundColor, thumbColor: thumbColor, ...attributes});
+    else if(type === 'checkbox' || type === 'switch'){
+        let trackColor = {'false': flavor?.neutralColor ?? '#ccc', 'true': flavor?.primaryColor ?? 'blue'};
+        let ios_backgroundColor = flavor?.neutralColor ?? '#ccc'; //Equivalent to 'false' trackColor
+        let thumbColor = '#ffffff';
+        return RNSwitch({trackColor: trackColor, ios_backgroundColor: ios_backgroundColor, thumbColor: thumbColor, ...attributes});
     } 
 
     /*
@@ -595,11 +613,12 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
         let listStyle = {
             color: flavor?.textColor ?? '#333',
             fontSize: flavor?.textSize ?? 16,
-            fontFamily: flavor?.textFamily ?? undefined,
+            fontFamily: flavor?.textFamily ?? 'AvenirNext, Arial, Sans-Serif',
             fontWeight: flavor?.textWeight ?? 'normal',
             backgroundColor: flavor?.backgroundColor ?? 'transparent',
-            borderColor: flavor?.borderColor ?? 'none',
             borderWidth: flavor?.borderWidth ?? 0,
+            borderStyle: flavor?.borderStyle ?? 'solid',
+            borderColor: flavor?.borderColor ?? 'none',
             borderRadius: flavor?.radius ?? 0,
             // textDecorationLines: 'none',
             paddingLeft: 10
@@ -664,6 +683,7 @@ export const Input = ({type, flavor=readFlavor('default'), ...attributes}={}) =>
 * @returns {ReactElement} - The element corresponding to the Icon.
 */
 export const Icon = Component('Icon', false, ({icon, size=32, raised, flavor=readFlavor('default'), ...attributes}={}) => {
+    if(!icon) return null; 
     size = flavor?.iconSize ?? size === 'large'? 64 : size === 'small'? 16 : size;
     let padding = Math.floor(parseInt(size) / 4);
     const gradient = flavor?.primaryGradient ? readIconGradient(flavor?.primaryGradient) : null;
@@ -673,7 +693,14 @@ export const Icon = Component('Icon', false, ({icon, size=32, raised, flavor=rea
         fill: gradient ? 'url(#' + gradient.id + ')' : flavor.primaryColor ?? 'blue',
         backgroundColor: 'transparent'
     };
-    if(!icon) return null; 
+    const backgroundStyle = {
+        minWidth: size + padding * 2,
+        minHeight: size + padding * 2,
+        width: size + padding * 2,
+        height: size + padding * 2
+    };
+    attributes['style'] = mergeStyles(backgroundStyle, attributes['style']);
+    
     const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
     return View({content: {h: 'center', v: 'center'}, flavor: raised ? flavor : undefined, ...attributes})(Xml({xml: iconWithGradient, style: iconStyle}));
 });

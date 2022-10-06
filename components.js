@@ -3,13 +3,11 @@ import {matchUrl, Component, BaseComponent, readFlavor, readIconGradient, positi
 //=============================================================================
 // STANDARD COMPONENTS:
 // Html standard components to be used on the web.
-// Naming convention: Exact same name as the html tag in CamelCase with first letter in capital.
+// Naming convention: Starts with 'Html' followed by the exact same name as the 
+// corresponding html tag in CamelCase.
 // Remarks: 
-//    <object> is HtmlObject not to colide with Object reserved word.
-//    <iframe> is IFrame
-//    <tbody> is TBody 
-//    <map> is HtmlMap to avoid collision with Map
-//    <input> is HtmlInput to avoid collision with Input
+//    <iframe> is HtmlIFrame
+//    <tbody> is HtmlTBody 
 //=============================================================================
 
 /** 
@@ -29,116 +27,116 @@ import {matchUrl, Component, BaseComponent, readFlavor, readIconGradient, positi
 * ```
 * @type {Object} 
 */
-export const A = BaseComponent('A', true, 'a');
-export const Abbr = BaseComponent('Abbr', true, 'abbr');
-export const Address = BaseComponent('Address', true, 'address');
-export const Area = BaseComponent('Area', false, 'area');
-export const Article = BaseComponent('Article', true, 'article');
-export const Aside = BaseComponent('Aside', true, 'aside');
-export const Audio = BaseComponent('Audio', true, 'audio');
-export const B = BaseComponent('B', true, 'b');
-export const Base = BaseComponent('Base', false, 'base');
-export const Bdi = BaseComponent('Bdi', true, 'bdi');
-export const Bdo = BaseComponent('Bdo', true, 'bdo');
-export const Blockquote = BaseComponent('Blockquote', true, 'blockquote');
-export const Body = BaseComponent('Body', true, 'body');
-export const Br = BaseComponent('Br', false, 'br');
-export const HtmlButton = BaseComponent('Button', true, 'button');
-export const Canvas = BaseComponent('Canvas', true, 'canvas');
-export const Caption = BaseComponent('Caption', true, 'caption');
-export const Cite = BaseComponent('Cite', true, 'cite');
-export const Code = BaseComponent('Code', true, 'code');
-export const Col = BaseComponent('Col', false, 'col');
-export const Colgroup = BaseComponent('Colgroup', false, 'colgroup');
-export const Data = BaseComponent('Data', true, 'data');
-export const Datalist = BaseComponent('Datalist', true, 'datalist');
-export const Dd = BaseComponent('Dd', true, 'dd');
-export const Del = BaseComponent('Del', true, 'del');
-export const Details = BaseComponent('Details', true, 'details');
-export const Dfn = BaseComponent('', true, 'dfn');
-export const Dialog = BaseComponent('', true, 'dialog');
-export const Div = BaseComponent('Div', true, 'div');
-export const Dl = BaseComponent('Dl', true, 'dl');
-export const Dt = BaseComponent('Dt', true, 'dt');
-export const Em = BaseComponent('Em', true, 'em');
-export const Embed = BaseComponent('Embed', false, 'embed');
-export const Fieldset = BaseComponent('Fieldset', true, 'fieldset');
-export const Figcaption = BaseComponent('Figcaption', true, 'figcaption');
-export const Figure = BaseComponent('Figure', true, 'figure');
-export const Footer = BaseComponent('Footer', true, 'footer');
-export const Form = BaseComponent('Form', true, 'form');
-export const H1 = BaseComponent('H1', true, 'h1');
-export const H2 = BaseComponent('H2', true, 'h2');
-export const H3 = BaseComponent('H3', true, 'h3');
-export const H4 = BaseComponent('H4', true, 'h4');
-export const H5 = BaseComponent('H5', true, 'h5');
-export const H6 = BaseComponent('H6', true, 'h6');
-export const Head = BaseComponent('Head', true, 'head');
-export const Header = BaseComponent('Header', true, 'header');
-export const Hr = BaseComponent('Hr', false, 'hr');
+export const HtmlA = BaseComponent('HtmlA', true, 'a');
+export const HtmlAbbr = BaseComponent('HtmlAbbr', true, 'abbr');
+export const HtmlAddress = BaseComponent('HtmlAddress', true, 'address');
+export const HtmlArea = BaseComponent('HtmlArea', false, 'area');
+export const HtmlArticle = BaseComponent('HtmlArticle', true, 'article');
+export const HtmlAside = BaseComponent('HtmlAside', true, 'aside');
+export const HtmlAudio = BaseComponent('HtmlAudio', true, 'audio');
+export const HtmlB = BaseComponent('HtmlB', true, 'b');
+export const HtmlBase = BaseComponent('HtmlBase', false, 'base');
+export const HtmlBdi = BaseComponent('HtmlBdi', true, 'bdi');
+export const HtmlBdo = BaseComponent('HtmlBdo', true, 'bdo');
+export const HtmlBlockquote = BaseComponent('HtmlBlockquote', true, 'blockquote');
+export const HtmlBody = BaseComponent('HtmlBody', true, 'body');
+export const HtmlBr = BaseComponent('HtmlBr', false, 'br');
+export const HtmlButton = BaseComponent('HtmlButton', true, 'button');
+export const HtmlCanvas = BaseComponent('HtmlCanvas', true, 'canvas');
+export const HtmlCaption = BaseComponent('HtmlCaption', true, 'caption');
+export const HtmlCite = BaseComponent('HtmlCite', true, 'cite');
+export const HtmlCode = BaseComponent('HtmlCode', true, 'code');
+export const HtmlCol = BaseComponent('HtmlCol', false, 'col');
+export const HtmlColgroup = BaseComponent('HtmlColgroup', false, 'colgroup');
+export const HtmlData = BaseComponent('HtmlData', true, 'data');
+export const HtmlDatalist = BaseComponent('HtmlDatalist', true, 'datalist');
+export const HtmlDd = BaseComponent('HtmlDd', true, 'dd');
+export const HtmlDel = BaseComponent('HtmlDel', true, 'del');
+export const HtmlDetails = BaseComponent('HtmlDetails', true, 'details');
+export const HtmlDfn = BaseComponent('Html', true, 'dfn');
+export const HtmlDialog = BaseComponent('Html', true, 'dialog');
+export const HtmlDiv = BaseComponent('HtmlDiv', true, 'div');
+export const HtmlDl = BaseComponent('HtmlDl', true, 'dl');
+export const HtmlDt = BaseComponent('HtmlDt', true, 'dt');
+export const HtmlEm = BaseComponent('HtmlEm', true, 'em');
+export const HtmlEmbed = BaseComponent('HtmlEmbed', false, 'embed');
+export const HtmlFieldset = BaseComponent('HtmlFieldset', true, 'fieldset');
+export const HtmlFigcaption = BaseComponent('HtmlFigcaption', true, 'figcaption');
+export const HtmlFigure = BaseComponent('HtmlFigure', true, 'figure');
+export const HtmlFooter = BaseComponent('HtmlFooter', true, 'footer');
+export const HtmlForm = BaseComponent('HtmlForm', true, 'form');
+export const HtmlH1 = BaseComponent('HtmlH1', true, 'h1');
+export const HtmlH2 = BaseComponent('HtmlH2', true, 'h2');
+export const HtmlH3 = BaseComponent('HtmlH3', true, 'h3');
+export const HtmlH4 = BaseComponent('HtmlH4', true, 'h4');
+export const HtmlH5 = BaseComponent('HtmlH5', true, 'h5');
+export const HtmlH6 = BaseComponent('HtmlH6', true, 'h6');
+export const HtmlHead = BaseComponent('HtmlHead', true, 'head');
+export const HtmlHeader = BaseComponent('HtmlHeader', true, 'header');
+export const HtmlHr = BaseComponent('HtmlHr', false, 'hr');
 export const Html = BaseComponent('Html', true, 'html');
-export const I = BaseComponent('I', true, 'i');
-export const IFrame = BaseComponent('IFrame', true, 'iframe');
-export const Img = BaseComponent('Img', false, 'img');
+export const HtmlI = BaseComponent('HtmlI', true, 'i');
+export const HtmlIFrame = BaseComponent('HtmlIFrame', true, 'iframe');
+export const HtmlImg = BaseComponent('HtmlImg', false, 'img');
 export const HtmlInput = BaseComponent('HtmlInput', false, 'input'); //"Input" is defined later in a custom way
-export const Ins = BaseComponent('Ins', true, 'ins');
-export const Kbd = BaseComponent('Kbd', true, 'kbd');
-export const Label = BaseComponent('Label', true, 'label');
-export const Legend = BaseComponent('Legend', true, 'legend');
-export const Li = BaseComponent('Li', true, 'li');
-export const Link = BaseComponent('Link', false, 'link');
-export const Main = BaseComponent('Main', true, 'main');
-export const HtmlMap = BaseComponent('Map', true, 'map'); //"Map", is it colliding with any reserved word?
-export const Mark = BaseComponent('Mark', true, 'mark');
-export const Meta = BaseComponent('Meta', true, 'Meta', false, 'meta');
-export const Meter = BaseComponent('Meter', true, 'meter');
-export const Nav = BaseComponent('Nav', true, 'nav');
-export const Noscript = BaseComponent('Noscript', true, 'noscript');
-export const HtmlObject = BaseComponent('Object', true, 'object'); //"Obj", otherwise collides with "Object" reserved word
-export const Ol = BaseComponent('Ol', true, 'ol');
-export const Optgroup = BaseComponent('Optgroup', true, 'optgroup');
-export const Option = BaseComponent('Option', true, 'option');
-export const Output = BaseComponent('Output', true, 'output');
-export const P = BaseComponent('P', true, 'p');
-export const Param = BaseComponent('Param', false, 'param');
-export const Picture = BaseComponent('', true, 'picture');
-export const Pre = BaseComponent('Pre', true, 'pre');
-export const Progress = BaseComponent('Progress', true, 'progress');
-export const Q = BaseComponent('Q', true, 'q');
-export const Rp = BaseComponent('Rp', true, 'rp');
-export const Rt = BaseComponent('Rt', true, 'rt');
-export const Ruby = BaseComponent('Ruby', true, 'ruby');
-export const S = BaseComponent('S', true, 's');
-export const Samp = BaseComponent('Samp', true, 'samp');
-export const Script = BaseComponent('Script', true, 'script');
-export const Section = BaseComponent('Section', true, 'section');
-export const Select = BaseComponent('Select', true, 'select');
-export const Small = BaseComponent('Small', true, 'small');
-export const Source = BaseComponent('Source', false, 'source');
-export const Span = BaseComponent('Span', true, 'span');
-export const Strong = BaseComponent('Strong', true, 'strong');
-export const Style = BaseComponent('Style', true, 'style');
-export const Sub = BaseComponent('Sub', true, 'sub');
-export const Summary = BaseComponent('Summary', true, 'summary');
-export const Sup = BaseComponent('Sup', true, 'sup');
-export const Svg = BaseComponent('Svg', true, 'svg');
-export const Table = BaseComponent('Table', true, 'table');
-export const TBody = BaseComponent('TBody', true, 'tbody');
-export const Td = BaseComponent('Td', true, 'td');
-export const Template = BaseComponent('Template', true, 'template');
-export const Textarea = BaseComponent('Textarea', true, 'textarea');
-export const TFoot = BaseComponent('TFoot', true, 'tfoot');
-export const Th = BaseComponent('Th', true, 'th');
-export const Thead = BaseComponent('Thead', true, 'thead');
-export const Time = BaseComponent('Time', true, 'time');
-export const Title = BaseComponent('Title', true, 'title');
-export const Tr = BaseComponent('Tr', true, 'tr');
-export const Track = BaseComponent('Track', false, 'track');
-export const U = BaseComponent('U', true, 'u');
-export const Ul = BaseComponent('Ul', true, 'ul');
-export const Var = BaseComponent('Var', true, 'var');
-export const Video = BaseComponent('Video', true, 'video');
-export const Wbr = BaseComponent('Wbr', false, 'wbr');
+export const HtmlIns = BaseComponent('HtmlIns', true, 'ins');
+export const HtmlKbd = BaseComponent('HtmlKbd', true, 'kbd');
+export const HtmlLabel = BaseComponent('HtmlLabel', true, 'label');
+export const HtmlLegend = BaseComponent('HtmlLegend', true, 'legend');
+export const HtmlLi = BaseComponent('HtmlLi', true, 'li');
+export const HtmlLink = BaseComponent('HtmlLink', false, 'link');
+export const HtmlMain = BaseComponent('HtmlMain', true, 'main');
+export const HtmlMap = BaseComponent('HtmlMap', true, 'map'); //"Map", is it colliding with any reserved word?
+export const HtmlMark = BaseComponent('HtmlMark', true, 'mark');
+export const HtmlMeta = BaseComponent('HtmlMeta', true, 'Meta', false, 'meta');
+export const HtmlMeter = BaseComponent('HtmlMeter', true, 'meter');
+export const HtmlNav = BaseComponent('HtmlNav', true, 'nav');
+export const HtmlNoscript = BaseComponent('HtmlNoscript', true, 'noscript');
+export const HtmlObject = BaseComponent('HtmlObject', true, 'object'); //"Obj", otherwise collides with "Object" reserved word
+export const HtmlOl = BaseComponent('HtmlOl', true, 'ol');
+export const HtmlOptgroup = BaseComponent('HtmlOptgroup', true, 'optgroup');
+export const HtmlOption = BaseComponent('HtmlOption', true, 'option');
+export const HtmlOutput = BaseComponent('HtmlOutput', true, 'output');
+export const HtmlP = BaseComponent('HtmlP', true, 'p');
+export const HtmlParam = BaseComponent('HtmlParam', false, 'param');
+export const HtmlPicture = BaseComponent('Html', true, 'picture');
+export const HtmlPre = BaseComponent('HtmlPre', true, 'pre');
+export const HtmlProgress = BaseComponent('HtmlProgress', true, 'progress');
+export const HtmlQ = BaseComponent('HtmlQ', true, 'q');
+export const HtmlRp = BaseComponent('HtmlRp', true, 'rp');
+export const HtmlRt = BaseComponent('HtmlRt', true, 'rt');
+export const HtmlRuby = BaseComponent('HtmlRuby', true, 'ruby');
+export const HtmlS = BaseComponent('HtmlS', true, 's');
+export const HtmlSamp = BaseComponent('HtmlSamp', true, 'samp');
+export const HtmlScript = BaseComponent('HtmlScript', true, 'script');
+export const HtmlSection = BaseComponent('HtmlSection', true, 'section');
+export const HtmlSelect = BaseComponent('HtmlSelect', true, 'select');
+export const HtmlSmall = BaseComponent('HtmlSmall', true, 'small');
+export const HtmlSource = BaseComponent('HtmlSource', false, 'source');
+export const HtmlSpan = BaseComponent('HtmlSpan', true, 'span');
+export const HtmlStrong = BaseComponent('HtmlStrong', true, 'strong');
+export const HtmlStyle = BaseComponent('HtmlStyle', true, 'style');
+export const HtmlSub = BaseComponent('HtmlSub', true, 'sub');
+export const HtmlSummary = BaseComponent('HtmlSummary', true, 'summary');
+export const HtmlSup = BaseComponent('HtmlSup', true, 'sup');
+export const HtmlSvg = BaseComponent('HtmlSvg', true, 'svg');
+export const HtmlTable = BaseComponent('HtmlTable', true, 'table');
+export const HtmlTBody = BaseComponent('HtmlTBody', true, 'tbody');
+export const HtmlTd = BaseComponent('HtmlTd', true, 'td');
+export const HtmlTemplate = BaseComponent('HtmlTemplate', true, 'template');
+export const HtmlTextarea = BaseComponent('HtmlTextarea', true, 'textarea');
+export const HtmlTFoot = BaseComponent('HtmlTFoot', true, 'tfoot');
+export const HtmlTh = BaseComponent('HtmlTh', true, 'th');
+export const HtmlThead = BaseComponent('HtmlThead', true, 'thead');
+export const HtmlTime = BaseComponent('HtmlTime', true, 'time');
+export const HtmlTitle = BaseComponent('HtmlTitle', true, 'title');
+export const HtmlTr = BaseComponent('HtmlTr', true, 'tr');
+export const HtmlTrack = BaseComponent('HtmlTrack', false, 'track');
+export const HtmlU = BaseComponent('HtmlU', true, 'u');
+export const HtmlUl = BaseComponent('HtmlUl', true, 'ul');
+export const HtmlVar = BaseComponent('HtmlVar', true, 'var');
+export const HtmlVideo = BaseComponent('HtmlVideo', true, 'video');
+export const HtmlWbr = BaseComponent('HtmlWbr', false, 'wbr');
 
 //=============================================================================
 // VIEW COMPONENT:
@@ -288,10 +286,13 @@ const animate = (animation, property) => (newValue, component) => {
 * @param {Function} onActiveChange - The function called when the 'active' property is modified due to url changes. 
 * It can be used to update the 'active' state variable.
 * @param {Content} content - The configuration specifying the positioning of the component's content.
-* @param {Number} expand - Ability for a flex component to grow if there is extra space (0 CSS default). The greater the number, the greater the expansion 
-* with respect to other sibling components able to expand. 0 means the component is unable to expand.
-* @param {Number} shrink - Ability for a flex component to shrink if there is not enough space (1 CSS default). The greater the number, the greater the shrinkage 
-* with respect to other sibling components able to shrink. 0 means the component is unable to shrink.
+* @param {Object} self - The configuration specifying the positioning of the component itself with respect to its siblings.
+*   - expand: Ability for a flex component to grow if there is extra space (0 CSS default). The greater the number, the greater the expansion 
+*             with respect to other sibling components able to expand. 0 means the component is unable to expand.
+*   - shrink: Ability for a flex component to shrink if there is not enough space (1 CSS default). The greater the number, the greater the shrinkage 
+*             with respect to other sibling components able to shrink. 0 means the component is unable to shrink.
+*   - align:  It allows to override the transversal (perpendicular to the content direction) positioning set by the parent with the 'content' property.
+*             E.g. If the parent sets the content to be aligned in a row on top, with the self property child element can override this behaviour.
 * @param {Array<String> | Array<Object> | Map} animation - The animation to be executed on the component for the different property value changes.
 * @param {Url} [url] - The configuration structure required to make routing possible. It enables displaying or hiding the View based on the url, adding an
 * 'active' attribute or making it clickable redirecting the user to the chosen url.
@@ -309,7 +310,7 @@ const animate = (animation, property) => (newValue, component) => {
 * ```
 * @returns {ReactElement} - The element corresponding to the View.
 */
-export const View = ({visible=true, onVisibleChange=()=>{}, active=false, onActiveChange=()=>{}, content={h:'left', v:'top'}, expand, shrink, animation, flavor, ...attributes}={}) => structure => {
+export const View = ({visible=true, onVisibleChange=()=>{}, active=false, onActiveChange=()=>{}, content={h:'left', v:'top'}, self, animation, flavor, ...attributes}={}) => structure => {
     //Set onPropertyChange callback functions
     let internalOnPropertyChange = {};
     if(animation && typeof animation === 'object') {
@@ -321,31 +322,27 @@ export const View = ({visible=true, onVisibleChange=()=>{}, active=false, onActi
     const finalOnPropertyChange = exeternalOnPropertyChange ? {...internalOnPropertyChange, ...exeternalOnPropertyChange} : internalOnPropertyChange;//Compose internal and external onPropertyChange
     delete attributes['onPropertyChange'];
 
-    //Set style: External inline styles need to be combined with the inline style style required for positioning the content
+    //Set style positioning: External inline styles need to be combined with the inline style style required for positioning the content
     const externalDisplay = mergeStyles(attributes['style'], attributes['inlineStyle'])?.display ?? 'flex';
     if(externalDisplay === 'flex') { //Only for 'flex' display property
         const positionInlineStyle = {
             display: visible ? 'flex' : 'none', 
-            flexGrow: expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
-            flexShrink: shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
+            flexGrow: self?.expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
+            flexShrink: self?.shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
+            alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
             ...positionContent(content)
         };
         if(animation?.['visible']) positionInlineStyle.display = 'none'; //Avoids initial rendering and then happening the fade-out animation (blink). Fade-in is still displayed 
         attributes['inlineStyle'] = mergeStyles(positionInlineStyle, attributes['inlineStyle']);
     }
-    /*Flavor in Web: It is compiled into CSS variables with the chosen value as the fallback value. E.g.: flavor = {primaryColor = 'pink'}; //, compol
-      Then the BaseComponent underneath needs to be fed the flavor, so that it can retrieve the associated CSS class where the CSS variables are given the corresponding value for the flavor.
-      In every new component that we create, where we want flavor to be applied to , we will need to feed them the flavor as attributes. This is different than on native because 
-    on native we work with values rather than variables and therefore we do not need any CSS classes to relate the variables with the values.
-    */
+
+    //Set the style based on the input flavor. By default, no flavor is applied.
     const flavorStyle = {//Outer style. When there is a gradient it is applied to the Gradient itself.
         background: flavor?.backgroundGradient ? flavor?.backgroundGradient : (flavor?.backgroundColor ?? 'transparent'),
         borderWidth: flavor?.borderWidth ?? 0,
-        borderStyle: flavor?.borderStyle ?? 'none',
+        borderStyle: flavor?.borderStyle ?? 'solid',
         borderColor: flavor?.borderColor ?? 'transparent',
         borderRadius: flavor?.radius ?? 0,
-        flexGrow: expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
-        flexShrink: shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).
         ...flavor?.shadow
     }
     attributes['style'] = mergeStyles(flavorStyle, attributes['style']);
@@ -359,7 +356,7 @@ export const View = ({visible=true, onVisibleChange=()=>{}, active=false, onActi
     visible = visible === true ? 1 : (visible === false ? 0 : visible);
     active = active === true ? 1 : (active === false ? 0 : active);
 
-    return Div({visible: visible, active: active, onPropertyChange: finalOnPropertyChange, ...attributes})(structure);
+    return HtmlDiv({visible: visible, active: active, onPropertyChange: finalOnPropertyChange, ...attributes})(structure);
 };
 
 //=============================================================================
@@ -385,11 +382,11 @@ export const Button = ({flavor=readFlavor('default'), ...attributes}={}) => stru
     const buttonStyle = {
         background: flavor?.backgroundGradient ?? flavor?.backgroundColor ?? 'blue',
         color: flavor?.textColor ?? '#666',
-        fontFamily: flavor?.fontFamily ?? 'Arial, Sans-Serif',
-        fontSize: flavor?.textSize ?? '100%',
+        fontFamily: flavor?.fontFamily ?? 'AvenirNext, Arial, Sans-Serif',
+        fontSize: flavor?.textSize ?? 16,
         fontWeight: flavor?.fontWeight ?? 'normal',
         borderWidth: flavor?.borderWidth ?? 0,
-        borderStyle: flavor?.borderStyle ?? 'none',
+        borderStyle: flavor?.borderStyle ?? 'solid',
         borderColor: flavor?.borderColor ?? transparent,
         borderRadius: flavor?.radius ?? 0,
         ...flavor?.shadow,
@@ -424,8 +421,8 @@ export const Button = ({flavor=readFlavor('default'), ...attributes}={}) => stru
 // export const Text = BaseComponent('Text', true, 'p');
 export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => structure => {
     const textStyle = {
-        fontFamily: flavor?.textFont,
-        fontSize: flavor?.textSize,
+        fontFamily: flavor?.textFont ?? 'AvenirNext, Arial, Sans-Serif',
+        fontSize: flavor?.textSize ?? 16,
         color: flavor?.textGradient ? 'transparent' : flavor?.textColor,
         fontWeight: flavor?.fontWeight ?? 'normal',
         //Code below could be used to enable gradient text
@@ -440,7 +437,7 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
     }
     attributes['style'] = mergeStyles(textStyle, attributes['style']);
 
-    return P(attributes)(structure);
+    return HtmlP(attributes)(structure);
 }
 
 /** 
@@ -470,18 +467,18 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
     //Standard input style
     const inputStyle = {
         color: flavor?.textColor ?? '#666',
-        fontFamily: flavor?.textFont ?? 'Arial, Sans-Serif',
-        fontSize: flavor?.textSize ?? '100%',
+        fontFamily: flavor?.textFont ?? 'AvenirNext, Arial, Sans-Serif',
+        fontSize: flavor?.textSize ?? 16,
         fontWeight: flavor?.fontWeight ?? 'normal',
         ...flavor?.shadow,
         borderRadius: flavor?.radius ?? 0,
         transitionDuration: '0.4s',
         cursor: 'pointer',
         textDecoration: 'none',
-        borderWidth: flavor?.inputBorderWidth ?? 1,
-        borderStyle: flavor?.inputBorderStyle ?? 'solid',
-        borderColor: flavor?.inputBorderColor ?? 'blue',
-        minHeight: 25,
+        borderWidth: flavor?.borderWidth ?? 1,
+        borderStyle: flavor?.borderStyle ?? 'solid',
+        borderColor: flavor?.borderColor ?? '#ccc',
+        minHeight: 40,
         background: 'white',
         padding: '5px 15px',
         '&::placeholder': { color: flavor?.neutralColor, },
@@ -505,7 +502,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             overflow: 'auto',
         };
         attributes['style'] = mergeStyles(inputStyle, textareaStyle, attributes['style']);
-        return Textarea(attributes)();
+        return HtmlTextarea(attributes)();
     }
     //Multiple choice input
     else if(type === 'select' || type === 'list') {
@@ -513,19 +510,19 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         //options (array): ['Volvo', 'Mercedes', 'Rolex', 'Cartier'];                           //For simple scenarios    
         //options (array): [{value: 'vol', label: 'Volvo'}, {value: 'mer', label: 'Mercedes'}]; //This is the standard definition       
         if(Array.isArray(options)) {
-            return Select(attributes)(options.map(item => Option({value: typeof item === 'string' ? item : item.value})(typeof item === 'string' ? item : item.label)));
+            return HtmlSelect(attributes)(options.map(item => HtmlOption({value: typeof item === 'string' ? item : item.value})(typeof item === 'string' ? item : item.label)));
         }
         //options (object): {cars: {volvo: 'Volvo', mercedes: 'Mercedes'}, watches: {rolex: 'Rolex', cartier: 'Cartier'}}; //Only allows 1 level of indentation
         else if(typeof options === 'object') {
-            return Select(attributes)(Object.entries(options).map(([key, value]) => {
+            return HtmlSelect(attributes)(Object.entries(options).map(([key, value]) => {
                 if(value && typeof value === 'object') {
-                    return Optgroup({label: key})(Object.entries(value).map(([subkey, subvalue]) => {return Option({value: subkey})(subvalue)}));
+                    return HtmlOptgroup({label: key})(Object.entries(value).map(([subkey, subvalue]) => {return HtmlOption({value: subkey})(subvalue)}));
                 }
-                else return Option({value: key})(value);
+                else return HtmlOption({value: key})(value);
             }));
         }
         else {
-            return Select(attributes)();
+            return HtmlSelect(attributes)();
         }
     }
     //Range slider input
@@ -533,13 +530,13 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         const rangeStyle = {
             padding: 0,
             appearance: 'none',
-            width: '100%',
+            // width: '100%',
             height: '2px',
             border: 'none',
             borderRadius: '5px',
             background: flavor?.primaryColor,
             outline: 'none',
-            opacity: '0.7',
+            opacity: '0.8',
             transition: 'opacity .2s',
             '&:hover': {
                 opacity: 1,
@@ -573,17 +570,20 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         return HtmlInput({...attributes, type: type, inlineStyle: inlineStyle}); //This overrides any style defined by the user
     }
     //Checkbox/Switch input
-    else if(type === 'checkbox') {
+    else if(type === 'checkbox' || type === 'switch') {
         const checkboxInputStyle = {
             position: 'relative',
             appearance: 'none',
             outline: 'none',
             width: '50px',
             height: '30px',
-            background: '#fff',
-            border: '1px solid #D9DADC',
+            background: '#fff',                                         //Thumb color
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: flavor?.neutralColor ?? '#D9DADC',             //Border color
+            border: '1px solid ',         
             borderRadius: '50px',
-            boxShadow: 'inset -20px 0 0 0 #fff',
+            boxShadow: 'inset -20px 0 0 0 #fff',                        //track color when false
             transitionDuration: '0.4s',
             ':after': {
                 'content': '""',
@@ -597,8 +597,8 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
                 boxShadow: '2px 4px 6px rgba(0,0,0,0.2)',
             },
             '&:checked': {
-                boxShadow: 'inset 20px 0 0 0 ' + flavor?.primaryColor,
-                borderColor: flavor?.primaryColor,
+                boxShadow: 'inset 20px 0 0 0 ' + flavor?.primaryColor ?? 'blue', //Track color when true
+                borderColor: flavor?.primaryColor ?? 'blue',
             },
             '&:checked:after': {
                 left: '20px',
@@ -606,7 +606,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             },
             ':focus': {
                 outline: 'none',
-                borderColor: flavor?.primaryColor,
+                borderColor: flavor?.primaryColor ?? 'blue',
             },
         };
         attributes['style'] = mergeStyles(checkboxInputStyle, attributes['style']);
@@ -697,7 +697,7 @@ export const Icon = Component('Icon', false, ({icon, raised, size=32, flavor=rea
         iconStyle = {...iconStyle, ...{
             background: flavor?.backgroundColor ?? 'blue',
             borderWidth: flavor?.borderWidth ?? 0,
-            borderStyle: flavor?.borderStyle ?? 'none',
+            borderStyle: flavor?.borderStyle ?? 'solid',
             borderColor: flavor?.borderColor ?? 'transparent',
             borderRadius: flavor?.radius ?? '0px',            
             padding: padding,
@@ -773,8 +773,8 @@ export const Modal = Component('Modal', true, ({flavor=readFlavor('default'), he
         padding: '10px 0', 
         width: '100%', 
         borderBottom: '1px solid white', 
-        fontFamily: flavor?.textFont ?? 'Arial', 
-        fontSize: flavor?.textSize ?? '110%', 
+        fontFamily: flavor?.textFont ?? 'AvenirNext, Arial, Sans-Serif', 
+        fontSize: flavor?.textSize ?? 18, 
         color: flavor?.textColor ?? '#333',
         fontWeight: flavor?.fontWeight ?? 'normal',
     };
@@ -864,11 +864,11 @@ export const Slider = Component('Slider', true, ({value = 0, onChange = ()=>{}, 
     //Update the url with the right component. This enables other components to modify the value property. Does not work, resets the hash on scroll
     // if(!scroll && location.hash !== '#' + id + 'Slide' + value) location.hash = '#' + id + 'Slide' + value;
     
-    return View({name: name, expand: 1, style: mainStyle, ...attributes})([
+    return View({name: name, self: {expand: 1}, style: mainStyle, ...attributes})([
         View({style: containerStyle, content: {direction: direction, wrap: false}, class: 'sliderContainer'})(
-            structure.map((view, index) => View({onCreate: visibleEvent(index), content: {direction: direction, wrap: false}, shrink: 0, key: id + 'Slide' + index, id: id + 'Slide' + index, style: contentStyle})(view))), 
-        bullets && View({content: {h: 'center', v:'center'}, shrink: 0, id: 'bullets', inlineStyle: {position: 'absolute', bottom: 0, width: '100%', zIndex: 3}})(
-            structure.map((view, index) => A({key: index, active: parseInt(index) === parseInt(value) ? 1 : undefined, href: '#' + id + 'Slide' + index})(index)))
+            structure.map((view, index) => View({onCreate: visibleEvent(index), content: {direction: direction, wrap: false}, self: {shrink: 0}, key: id + 'Slide' + index, id: id + 'Slide' + index, style: contentStyle})(view))), 
+        bullets && View({content: {h: 'center', v:'center'}, self: {shrink: 0}, id: 'bullets', inlineStyle: {position: 'absolute', bottom: 0, width: '100%', zIndex: 3}})(
+            structure.map((view, index) => HtmlA({key: index, active: parseInt(index) === parseInt(value) ? 1 : undefined, href: '#' + id + 'Slide' + index})(index)))
     ]);
 });
 
