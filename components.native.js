@@ -67,7 +67,7 @@ export const RNAnimatedView = BaseComponent('Animated.View', true, Animated.View
 //External Compoenets
 const ListPicker = BaseComponent('ModalSelector', false, ModalSelector);    //https://github.com/peacechen/react-native-modal-selector 
 const DTPicker = BaseComponent('DateTimePicker', false, DateTimePicker);    //https://github.com/react-native-datetimepicker/datetimepicker
-const SliderPicker = BaseComponent('Slider', false, Slider);                //https://github.com/callstack/react-native-slider/tree/main/src
+const SliderPicker = BaseComponent('Slider', false, Slider);                //https://github.com/callstack/react-native-slider/
 
 //Gradient Components
 const Gradient = BaseComponent('LinearGradient', true, LinearGradient);
@@ -478,8 +478,9 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             borderColor: flavor?.borderColor ?? '#ccc',
             borderRadius: flavor?.radius ?? 0,
             minHeight: 50,
-            paddingTop: 10,
-            paddingBottom: 10,
+            minWidth: (type === 'button' || type === 'submit' || type === 'reset') ? 0 : 200,
+            paddingTop: 0,
+            paddingBottom: 0,
             paddingLeft: 15,
             paddingRight: 15,
             ...flavor?.shadow ?? 0                
@@ -519,8 +520,9 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         content = content ?? {h: 'center', v: 'center', direction: 'row', gap: 10, wrap: false};//Positions Title and Icon
         const url = attributes['url']; delete attributes['url'];
         const onPress = attributes['onPress'] ?? (attributes['onClick'] ?? undefined);
+        if(flavor?.backgroundGradient) delete attributes['style'].backgroundColor;
         return RNTouchableOpacity({onPress: onPress, url: url})(
-            View({content: content, ...attributes})([
+            View({content: content, flavor: flavor, ...attributes})([
                 (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}), 
                 Text({style: titleStyle, flavor: flavor})(title)
         ]));
@@ -534,12 +536,12 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
     else if(type === 'checkbox' || type === 'switch'){
         let trackColor = {'false': flavor?.neutralColor ?? '#ccc', 'true': flavor?.primaryColor ?? 'blue'};
         let ios_backgroundColor = flavor?.neutralColor ?? '#ccc'; //Equivalent to 'false' trackColor
-        let thumbColor = '#ffffff';
+        let thumbColor = 'white';
         return RNSwitch({trackColor: trackColor, ios_backgroundColor: ios_backgroundColor, thumbColor: thumbColor, ...attributes});
     } 
 
     /*
-    Slider: https://github.com/callstack/react-native-slider/tree/main/src
+    Slider: https://github.com/callstack/react-native-slider/
     onValueChange: Callback continuously called while the user is dragging the slider. No 'onChange' callback.
     JSX Example:
         <Slider
@@ -560,8 +562,9 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             delete attributes['max'];
         }
         minimumTrackTintColor = flavor?.primaryColor ?? 'blue';
-        maximumTrackTintColor="#666";
-        thumbTintColor = '#f1f1f1';
+        maximumTrackTintColor = flavor?.neutralColor ?? "#666";
+        thumbTintColor = 'white';
+        attributes['style'] = mergeStyles({minWidth: 200}, attributes['style']);
         return SliderPicker({minimumTrackTintColor: minimumTrackTintColor, maximumTrackTintColor: maximumTrackTintColor, thumbTintColor: thumbTintColor, ...attributes});
     }
     
@@ -590,7 +593,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             fontFamily: flavor?.textFamily ?? undefined,
             fontWeight: flavor?.textWeight ?? 'normal',
         };
-        const selectStyle = {padding: 0, borderWidth: 0, borderColor: 'transparent'};
+        const selectStyle = {paddingTop: 12, borderWidth: 0, borderColor: 'transparent'};
         const selectTextStyle = textStyle; 
         const selectedItemTextStyle = {...textStyle, color: flavor?.primaryColor ?? 'blue'};
         const optionTextStyle = textStyle;

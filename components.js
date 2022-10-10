@@ -478,9 +478,14 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         borderWidth: flavor?.borderWidth ?? 1,
         borderStyle: flavor?.borderStyle ?? 'solid',
         borderColor: flavor?.borderColor ?? '#ccc',
-        minHeight: 40,
-        background: 'white',
-        padding: '5px 15px',
+        minHeight: 45,
+        minWidth: (type === 'button' || type === 'submit' || type === 'reset') ? 0 : 200,
+        background: flavor?.backgroundGradient ?? flavor?.backgroundColor ?? 'white',
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 15,
+        paddingRight: 15,
+        boxSizing: 'border-box', //This makes sure that the padding and eventually borders are included in the total width and height of the elements.
         '&::placeholder': { color: flavor?.neutralColor, },
         ':focus': {
             outline: 'none',
@@ -496,8 +501,8 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
     //Textarea for longer text input
     if(type === 'textarea') {
         const textareaStyle = {
-            background: 'white',
-            padding: '10px 15px', 
+            paddingTop: 10, 
+            paddingBottom: 10,
             resize: 'none',
             overflow: 'auto',
         };
@@ -530,6 +535,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         const rangeStyle = {
             padding: 0,
             appearance: 'none',
+            minWidth: 200,
             // width: '100%',
             height: '2px',
             border: 'none',
@@ -616,11 +622,8 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
     //Button inputs
     else if(type === 'button' || type === 'submit' || type === 'reset') {
         const buttonBackgroundStyle = {
-            background: flavor?.backgroundGradient ?? flavor?.backgroundColor ?? 'blue',            
-            padding: '10px 15px',
             cursor: 'pointer',
             transitionDuration: '0.4s',
-            minHeight: 40,
             ':hover': {
                 filter: 'brightness(110%)',
             },
@@ -635,20 +638,21 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
               cursor: 'not-allowed',
             }
         }
+        attributes['style'] = mergeStyles(inputStyle, buttonBackgroundStyle, attributes['style']);
         content = content ?? {h: 'center', v: 'center', direction: 'row', gap: 10};//Positions Title and Icon
         
         if(icon) {
-            attributes['style'] = mergeStyles(buttonBackgroundStyle, attributes['style'])
             return View({content: content, flavor: flavor, ...attributes})([
                 icon && Icon({icon: icon, style: iconStyle, flavor: flavor}), 
                 Text({style: titleStyle,  flavor: flavor})(title)
             ]);
         }
-        attributes['style'] = mergeStyles(inputStyle, buttonBackgroundStyle, attributes['style']);
+        
         return HtmlInput({...attributes, type: type, value: title});
     }
     //Other Text inputs
     attributes['style'] = mergeStyles(inputStyle, attributes['style']);
+    if(type === 'datetime') type = 'datetime-local';
     return HtmlInput({...attributes, type: type});
 }
 
@@ -682,6 +686,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
 * @todo just leave icon: if it is a file use that (remove iconFont and iconFile)
 */
 export const Icon = Component('Icon', false, ({icon, raised, size=32, flavor=readFlavor('default'), ...attributes}={}) => {
+    if(!icon) return null;
     size = flavor?.iconSize ?? size === 'large'? 64 : size === 'small'? 16 : size;
     const padding = Math.floor(parseInt(size) / 4);
     const gradient = flavor?.primaryGradient ? readIconGradient(flavor?.primaryGradient) : null;
@@ -705,25 +710,9 @@ export const Icon = Component('Icon', false, ({icon, raised, size=32, flavor=rea
         }};
     }
     attributes['style'] = mergeStyles(iconStyle, attributes['style']);
-
     //Webkit bug: When another icon with the same gradient id is not displayed in the screen, it can cause the current icon to be unable to display the svg gradient
-
-    //For both icon fonts and files
-    let selectedIcon = typeof icon === 'object' ? JSON.stringify(icon) : icon;
-    if(!selectedIcon) return null;
-    
-    // const gradientCompmonent =  '<svg>' + gradient?.value + '</svg>';
-    // selectedIcon = gradient ?   '<svg id="' + gradient.id + '">' + gradient.value + '</svg>' + selectedIcon : selectedIcon;
-    // if(gradient) {
-    //     const mySvg = document.createElement('svg');
-    //     mySvg.innerHTML  = gradient?.value;
-    //     document.body.prepend(mySvg);
-
-    // }
-    
-    selectedIcon = gradient ? selectedIcon + '<svg>' + gradient.value + '</svg>' : selectedIcon;
-    // selectedIcon = gradient ? selectedIcon.replace('>', ('>' + gradient.value)) : selectedIcon;
-    return View({dangerouslySetInnerHTML:{__html: selectedIcon}, ...attributes})();
+    const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
+    return View({dangerouslySetInnerHTML:{__html: iconWithGradient}, ...attributes})();
 });
 
 /** 
