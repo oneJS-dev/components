@@ -387,7 +387,7 @@ export const Button = ({flavor=readFlavor('default'), ...attributes}={}) => stru
         fontWeight: flavor?.fontWeight ?? 'normal',
         borderWidth: flavor?.borderWidth ?? 0,
         borderStyle: flavor?.borderStyle ?? 'solid',
-        borderColor: flavor?.borderColor ?? transparent,
+        borderColor: flavor?.borderColor ?? 'transparent',
         borderRadius: flavor?.radius ?? 0,
         ...flavor?.shadow,
         // minHeight: 30,
