@@ -1,16 +1,22 @@
 //ONEJS Internal Imports
-import {BaseComponent, Component, readFlavor, readIconGradient, positionContent, mergeStyles} from '@onejs-dev/core';
+import {
+    BaseComponent, Component, readFlavor, readIconGradient, positionContent, mergeStyles
+} from '@onejs-dev/core';
 
 //React Imports
-import {ActivityIndicator as _RNActivityIndicator, Button as _RNButton, FlatList as _RNFlatList, Image as _RNImage, 
-    ImageBackground as _RNImageBackground, KeyboardAvoidingView as _RNKeyboardAvoidingView, Modal as _RNModal, 
-    Pressable as _RNPressable, RefreshControl as _RNRefreshControl, ScrollView as _RNScrollView, SectionList as _RNSectionList, 
-    StatusBar as _RNStatusBar, Switch as _RNSwitch, Text as _RNText, TextInput as _RNTextInput, TouchableHighlight as _RNTouchableHighlight, 
-    TouchableOpacity as _RNTouchableOpacity, TouchableWithoutFeedback as _RNTouchableWithoutFeedback, View as _RNView, 
-    VirtualizedList as _RNVirtualizedList, DrawerLayoutAndroid as _RNDrawerLayoutAndroid, 
-    TouchableNativeFeedback as _RNTouchableNativeFeedback, InputAccessoryView as _RNInputAccessoryView, 
-    SafeAreaView as _RNSafeAreaView,
-    Platform, Animated, Easing} from 'react-native';
+import {
+    ActivityIndicator as _RNActivityIndicator, Button as _RNButton, FlatList as _RNFlatList,
+    Image as _RNImage, ImageBackground as _RNImageBackground,
+    KeyboardAvoidingView as _RNKeyboardAvoidingView, Modal as _RNModal, Pressable as _RNPressable,
+    RefreshControl as _RNRefreshControl, ScrollView as _RNScrollView, SectionList as _RNSectionList,
+    StatusBar as _RNStatusBar, Switch as _RNSwitch, Text as _RNText, TextInput as _RNTextInput,
+    TouchableHighlight as _RNTouchableHighlight, TouchableOpacity as _RNTouchableOpacity,
+    TouchableWithoutFeedback as _RNTouchableWithoutFeedback, View as _RNView,
+    VirtualizedList as _RNVirtualizedList, DrawerLayoutAndroid as _RNDrawerLayoutAndroid,
+    TouchableNativeFeedback as _RNTouchableNativeFeedback,
+    InputAccessoryView as _RNInputAccessoryView, SafeAreaView as _RNSafeAreaView,
+    Platform, Animated, Easing
+} from 'react-native';
 import React from 'react';
 
 //Gradient Imports
@@ -43,7 +49,8 @@ export const RNButton = BaseComponent('Button', false, _RNButton);
 export const RNFlatList = BaseComponent('FlatList', false, _RNFlatList);
 export const RNImage = BaseComponent('Image', false, _RNImage);
 export const RNImageBackground = BaseComponent('ImageBackground', true, _RNImageBackground);
-export const RNKeyboardAvoidingView = BaseComponent('KeyboardAvoidingView', true, _RNKeyboardAvoidingView);
+export const RNKeyboardAvoidingView =
+    BaseComponent('KeyboardAvoidingView', true, _RNKeyboardAvoidingView);
 export const RNModal = BaseComponent('Modal', true, _RNModal);
 export const RNPressable = BaseComponent('Pressable', true, _RNPressable);
 export const RNRefreshControl = BaseComponent('RefreshControl', false, _RNRefreshControl);
@@ -53,14 +60,19 @@ export const RNStatusBar = BaseComponent('StatusBar', false, _RNStatusBar);
 export const RNSwitch = BaseComponent('Switch', false, _RNSwitch);
 export const RNText = BaseComponent('_RNText', true, _RNText);
 export const RNTextInput = BaseComponent('TextInput', false, _RNTextInput);
-export const RNTouchableHighlight = BaseComponent('TouchableHighlight', true, _RNTouchableHighlight);
+export const RNTouchableHighlight =
+    BaseComponent('TouchableHighlight', true, _RNTouchableHighlight);
 export const RNTouchableOpacity = BaseComponent('TouchableOpacity', true, _RNTouchableOpacity);
-export const RNTouchableWithoutFeedback = BaseComponent('TouchableWithoutFeedback', true, _RNTouchableWithoutFeedback);
+export const RNTouchableWithoutFeedback =
+    BaseComponent('TouchableWithoutFeedback', true, _RNTouchableWithoutFeedback);
 export const RNView = BaseComponent('_RNView', true, _RNView);
 export const RNVirtualizedList = BaseComponent('VirtualizedList', false, _RNVirtualizedList);
-export const RNDrawerLayoutAndroid = BaseComponent('DrawerLayoutAndroid', true, _RNDrawerLayoutAndroid);
-export const RNTouchableNativeFeedback = BaseComponent('TouchableNativeFeedback', true, _RNTouchableNativeFeedback);
-export const RNInputAccessoryView = BaseComponent('InputAccessoryView', true, _RNInputAccessoryView);
+export const RNDrawerLayoutAndroid =
+    BaseComponent('DrawerLayoutAndroid', true, _RNDrawerLayoutAndroid);
+export const RNTouchableNativeFeedback =
+    BaseComponent('TouchableNativeFeedback', true, _RNTouchableNativeFeedback);
+export const RNInputAccessoryView =
+    BaseComponent('InputAccessoryView', true, _RNInputAccessoryView);
 export const RNSafeAreaView = BaseComponent('SafeAreaView', true, _RNSafeAreaView);
 export const RNAnimatedView = BaseComponent('Animated.View', true, Animated.View);
 
@@ -131,26 +143,86 @@ const animations = {
     'none': {keyframes: {}, options: {duration: 0}},
     'appear': {style: {display: 'flex'}},
     'disappear': {style: {display: 'none'}},
-    'fade-in': {keyframes: {opacity: [0,1]}, options: {duration: 300, easing: Easing.ease}},
-    'fade-in-left': {keyframes: {opacity: [0,1], transform: [{translateX: [-100, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'fade-in-right': {keyframes: {opacity: [0,1], transform: [{translateX: [100, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'fade-out': {keyframes: {opacity: [1, 0], display: ['flex', 'none']}, options: {duration: 300, easing: Easing.ease}},
-    'fade-out-left': {keyframes: {opacity: [1,0], transform: [{translateX: [0, -100]}]}, options: {duration: 300, easing: Easing.ease}},
-    'fade-out-right': {keyframes: {opacity: [1,0], transform: [{translateX: [0, 100]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-in-left': {keyframes: {transform: [{translateX: [-100, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-in-right': {keyframes: {transform: [{translateX: [100, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-in-up': {keyframes: {transform: [{translateY: [-100, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-in-down': {keyframes: {transform: [{translateY: [100, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-out-left': {keyframes: {transform: [{translateX: [0, -100]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-out-right': {keyframes: {transform: [{translateX: [0, 100]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-out-up': {keyframes: {transform: [{translateY: [0, -100]}]}, options: {duration: 300, easing: Easing.ease}},
-    'slide-out-down': {keyframes: {transform: [{translateY: [0, 100]}]}, options: {duration: 300, easing: Easing.ease}},
-    'expand': {keyframes: {transform: [{scale: [0, 1]}]}, options: {duration: 300, easing: Easing.bounce}},
-    'shrink': {keyframes: {transform: [{scale: [1, 0]}]}, options: {duration: 300, easing: Easing.bounce}},
-    'vertical-expand': {keyframes: {transform: [{scaleY: [0, 1]}]}, options: {duration: 300, easing: Easing.ease}},
-    'vertical-shrink': {keyframes: {transform: [{scaleY: [1, 0]}]}, options: {duration: 300, easing: Easing.ease}},
-    'horizontal-expand': {keyframes: {transform: [{scaleX: [0, 1]}]}, options: {duration: 300, easing: Easing.ease}},
-    'horizontal-shrink': {keyframes: {transform: [{scaleX: [1, 0]}]}, options: {duration: 300, easing: Easing.ease}},
+    'fade-in': {
+        keyframes: {opacity: [0, 1]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'fade-in-left': {
+        keyframes: {opacity: [0, 1], transform: [{translateX: [-100, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'fade-in-right': {
+        keyframes: {opacity: [0, 1], transform: [{translateX: [100, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'fade-out': {
+        keyframes: {opacity: [1, 0], display: ['flex', 'none']},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'fade-out-left': {
+        keyframes: {opacity: [1, 0], transform: [{translateX: [0, -100]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'fade-out-right': {
+        keyframes: {opacity: [1, 0], transform: [{translateX: [0, 100]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-in-left': {
+        keyframes: {transform: [{translateX: [-100, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-in-right': {
+        keyframes: {transform: [{translateX: [100, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-in-up': {
+        keyframes: {transform: [{translateY: [-100, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-in-down': {
+        keyframes: {transform: [{translateY: [100, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-out-left': {
+        keyframes: {transform: [{translateX: [0, -100]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-out-right': {
+        keyframes: {transform: [{translateX: [0, 100]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-out-up': {
+        keyframes: {transform: [{translateY: [0, -100]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'slide-out-down': {
+        keyframes: {transform: [{translateY: [0, 100]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'expand': {
+        keyframes: {transform: [{scale: [0, 1]}]},
+        options: {duration: 300, easing: Easing.bounce}
+    },
+    'shrink': {
+        keyframes: {transform: [{scale: [1, 0]}]},
+        options: {duration: 300, easing: Easing.bounce}
+    },
+    'vertical-expand': {
+        keyframes: {transform: [{scaleY: [0, 1]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'vertical-shrink': {
+        keyframes: {transform: [{scaleY: [1, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'horizontal-expand': {
+        keyframes: {transform: [{scaleX: [0, 1]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
+    'horizontal-shrink': {
+        keyframes: {transform: [{scaleX: [1, 0]}]},
+        options: {duration: 300, easing: Easing.ease}
+    },
 };
 
 /** 
@@ -180,37 +252,41 @@ const animations = {
 *   animate(['fade-in', 'shrink'], 'visible')(false, myComponent);
 * ```
 */
-const animate = (animation, property, animationValue, setSelectedKeyframes, isVisible, setIsVisible) => (newValue) => {
-    let selectedAnimation = {}; //Default for visible 
+const animate = (animation, property, animationValue, setSelectedKeyframes, isVisible,
+    setIsVisible) => (newValue) => {
+        let selectedAnimation = {}; //Default for visible 
 
-    //Check the animation is formated correctly
-    if(Array.isArray(animation)) {
-        try{selectedAnimation = newValue ? animation[0] : animation[1];}
-        catch(error) {console.error("animation should be in this format: ['in-animation', 'out-animation']"); return;}
-    }
-    else if(animation && typeof animation === 'object') {
-        try{selectedAnimation = animation instanceof Map ? animation[newValue] : undefined;}
-        catch(error) {console.error('No animation set for ' + newValue); return;}
-    }    
-    else {console.error('animation should be an Array or Map: ' + animation); return;}
+        //Check the animation is formated correctly
+        if(Array.isArray(animation)) {
+            try {selectedAnimation = newValue ? animation[0] : animation[1];}
+            catch(error) {
+                console.error("[oneJS]: animation should be in this format: ['in-animation', 'out-animation']");
+                return;
+            }
+        }
+        else if(animation && typeof animation === 'object') {
+            try {selectedAnimation = animation instanceof Map ? animation[newValue] : undefined;}
+            catch(error) {console.error('No animation set for ' + newValue); return;}
+        }
+        else {console.error('[oneJS]: animation should be an Array or Map: ' + animation); return;}
 
-    //Setup selected animation for string (take it from the predesigned animations)
-    if(typeof selectedAnimation === 'string') {
-        selectedAnimation = animations[selectedAnimation];
-        if(!selectedAnimation) {console.warn('No such animation: ' + selectedAnimation); return;}
-    } 
+        //Setup selected animation for string (take it from the predesigned animations)
+        if(typeof selectedAnimation === 'string') {
+            selectedAnimation = animations[selectedAnimation];
+            if(!selectedAnimation) {console.warn('No such animation: ' + selectedAnimation); return;}
+        }
 
-    //Generate animation
-    if(property === 'visible' && newValue) setIsVisible(true);      //To display in animation
-    if(property === 'visible' && !newValue && !isVisible) return;   //To avoid initial out animation and flickering
-    setSelectedKeyframes(selectedAnimation.keyframes);              //The keyframes that will be used for the interpolation
-    animationValue.setValue(0);                                      //Animation is set to always flow from 0 to 1
-    let options = {toValue: 1, useNativeDriver: true, ...selectedAnimation.options};
-    let completedCallback = (property, newValue) => ({result}) => {
-        if(property === 'visible' && !newValue) setIsVisible(false); //To hide element after out animation
-    }
-    Animated.timing(animationValue, options).start(completedCallback(property, newValue));
-}
+        //Generate animation
+        if(property === 'visible' && newValue) setIsVisible(true);      //To display in animation
+        if(property === 'visible' && !newValue && !isVisible) return;   //To avoid initial out animation and flickering
+        setSelectedKeyframes(selectedAnimation.keyframes);              //The keyframes that will be used for the interpolation
+        animationValue.setValue(0);                                      //Animation is set to always flow from 0 to 1
+        let options = {toValue: 1, useNativeDriver: true, ...selectedAnimation.options};
+        let completedCallback = (property, newValue) => ({result}) => {
+            if(property === 'visible' && !newValue) setIsVisible(false); //To hide element after out animation
+        };
+        Animated.timing(animationValue, options).start(completedCallback(property, newValue));
+    };
 
 /** 
 * @description Generates the style interpolated according the animation frames and value.
@@ -222,23 +298,29 @@ const animate = (animation, property, animationValue, setSelectedKeyframes, isVi
 * ```
 * @returns {Object} - The result of interpolating the styles in the keyframes according to the animation value.
 */
-const getAnimationStyle  = (animationValue, keyframes) => {
+const getAnimationStyle = (animationValue, keyframes) => {
     if(!keyframes) return {};
     let animationStyle = {};
     Object.entries(keyframes).forEach(([key, value]) => {
         if(typeof value[0] === 'number')
-            animationStyle[key] = animationValue.interpolate({inputRange: [0, 1], outputRange: value});
+            animationStyle[key] = animationValue.interpolate({
+                inputRange: [0, 1], outputRange: value
+            });
         else if(typeof value[0] === 'object') {//Required for transform property (array of objects)
             animationStyle[key] = [];
             value.forEach((item, index) => {
                 Object.entries(item).forEach(([subkey, subvalue]) => {
-                    animationStyle[key][index] = {[subkey]: animationValue.interpolate({inputRange: [0, 1], outputRange: subvalue})};
+                    animationStyle[key][index] = {
+                        [subkey]: animationValue.interpolate({
+                            inputRange: [0, 1], outputRange: subvalue
+                        })
+                    };
                 });
-            })
+            });
         }
     });
     return animationStyle;
-}
+};
 
 /**
 * @typedef  {Object}  Url - The configuration structure required by urlSetup function. It enables displaying or hiding the View based on the url, adding an
@@ -293,82 +375,95 @@ const getAnimationStyle  = (animationValue, keyframes) => {
 * ```
 * @returns {ReactElement} - The element corresponding to the View.
 */
-export const View = Component('View', true, ({visible=true, content={h:'left', v:'top'}, self, animation, url, flavor, ...attributes}={}) => structure => {
-    //Animations module
-    let animationValue;                  //The animation value being interpolated. Being a useRef object persists its value even if the function is called with different parameters.
-    let selectedKeyframes;              //State variable that stores the keyframes used during the animation. This allows animation to be changed as an input parameter.
-    let setSelectedKeyframes            //Sets selectedKeyframes value.
-    let isVisible;                      //State variable that stores whether the component is visible or is hidden due to the animation.
-    let setIsVisible;                   //Sets isVisible value.
-    let animationStyle = {};             //The style computed as an interpolation from the keyframes and the animationValue.
-    let internalOnPropertyChange = {}   //An object with the animate functions to be called for the selected properties in the animation configuration.
-    let exeternalOnPropertyChange;      //An object with the onPropertyChange attribute set by the user during instantiation.
-    let finalOnPropertyChange;          //The result of combining internalOnPropertyChange and externalOnPropertyChange
+export const View = Component('View', true, ({visible = true, content = {h: 'left', v: 'top'}, self,
+    animation, url, flavor, ...attributes} = {}) => structure => {
+        //Animations module
+        let animationValue;                  //The animation value being interpolated. Being a useRef object persists its value even if the function is called with different parameters.
+        let selectedKeyframes;              //State variable that stores the keyframes used during the animation. This allows animation to be changed as an input parameter.
+        let setSelectedKeyframes;            //Sets selectedKeyframes value.
+        let isVisible;                      //State variable that stores whether the component is visible or is hidden due to the animation.
+        let setIsVisible;                   //Sets isVisible value.
+        let animationStyle = {};             //The style computed as an interpolation from the keyframes and the animationValue.
+        let internalOnPropertyChange = {};   //An object with the animate functions to be called for the selected properties in the animation configuration.
+        let exeternalOnPropertyChange;      //An object with the onPropertyChange attribute set by the user during instantiation.
+        let finalOnPropertyChange;          //The result of combining internalOnPropertyChange and externalOnPropertyChange
 
-    if(animation) {
-        animationValue = React.useRef(new Animated.Value(0)).current;
-        [selectedKeyframes, setSelectedKeyframes] = React.useState({});
-        [isVisible, setIsVisible] = React.useState(false);
-        
-        animationStyle = getAnimationStyle(animationValue, selectedKeyframes);
+        if(animation) {
+            animationValue = React.useRef(new Animated.Value(0)).current;
+            [selectedKeyframes, setSelectedKeyframes] = React.useState({});
+            [isVisible, setIsVisible] = React.useState(false);
 
-        internalOnPropertyChange = {}
-        if(animation && typeof animation === 'object') {
-            Object.entries(animation).forEach(([property, value]) => { 
-                if(value) internalOnPropertyChange[property] = animate(value, property, animationValue, setSelectedKeyframes, isVisible, setIsVisible); 
-            })
+            animationStyle = getAnimationStyle(animationValue, selectedKeyframes);
+
+            internalOnPropertyChange = {};
+            if(animation && typeof animation === 'object') {
+                Object.entries(animation).forEach(([property, value]) => {
+                    if(value) internalOnPropertyChange[property] = animate(value, property,
+                        animationValue, setSelectedKeyframes, isVisible, setIsVisible);
+                });
+            }
+            exeternalOnPropertyChange = attributes['onPropertyChange'];
+            finalOnPropertyChange = exeternalOnPropertyChange ? {
+                ...internalOnPropertyChange, ...exeternalOnPropertyChange
+            } : internalOnPropertyChange;//Compose internal and external onPropertyChange
+            delete attributes['onPropertyChange'];
         }
-        exeternalOnPropertyChange = attributes['onPropertyChange'];    
-        finalOnPropertyChange = exeternalOnPropertyChange ? {...internalOnPropertyChange, ...exeternalOnPropertyChange} : internalOnPropertyChange;//Compose internal and external onPropertyChange
-        delete attributes['onPropertyChange'];
-    }
 
-    //Final Style
-    const externalDisplay = attributes['style']?.display ?? 'flex';
-    let contentStyle = {};
-    let selfStyle = {};
-    if(externalDisplay === 'flex') { //Only for 'flex' display property
-        contentStyle = {
-            display: visible ? 'flex' : 'none',
-            ...positionContent(content)
+        //Final Style
+        const externalDisplay = attributes['style']?.display ?? 'flex';
+        let contentStyle = {};
+        let selfStyle = {};
+        if(externalDisplay === 'flex') { //Only for 'flex' display property
+            contentStyle = {
+                display: visible ? 'flex' : 'none',
+                ...positionContent(content)
+            };
+            selfStyle = {
+                display: visible ? 'flex' : 'none',
+                flexGrow: self?.expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
+                flexShrink: self?.shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
+                // alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
+            };
         }
-        selfStyle = {
-            display: visible ? 'flex' : 'none', 
-            flexGrow: self?.expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
-            flexShrink: self?.shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
-            // alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
+        const outerStyle = {//Outer style. When there is a gradient it is applied to the Gradient itself.
+            borderWidth: flavor?.borderWidth ?? 0,
+            borderStyle: flavor?.borderStyle ?? 'solid',
+            borderColor: flavor?.borderColor ?? 'transparent',
+            borderRadius: flavor?.radius ?? 0,
+            ...flavor?.shadow ?? 0,
+            ...selfStyle
         };
-    }
-    const outerStyle = {//Outer style. When there is a gradient it is applied to the Gradient itself.
-        borderWidth: flavor?.borderWidth ?? 0,
-        borderStyle: flavor?.borderStyle ?? 'solid',
-        borderColor: flavor?.borderColor ?? 'transparent',
-        borderRadius: flavor?.radius ?? 0,
-        ...flavor?.shadow ?? 0,
-        ...selfStyle
-    }
-    const innerStyle = {//Inner style for the View
-        backgroundColor: flavor?.backgroundGradient ? 'transparent' : (flavor?.backgroundColor ?? 'transparent'),
-        borderRadius: flavor?.radius ?? 0,     
-        ...contentStyle,
-        ...animationStyle      
-    } 
-    attributes['style'] = flavor?.backgroundGradient ? mergeStyles(innerStyle, attributes['style']) : mergeStyles(innerStyle, outerStyle, attributes['style']);
+        const innerStyle = {//Inner style for the View
+            backgroundColor: flavor?.backgroundGradient ?
+                'transparent' : (flavor?.backgroundColor ?? 'transparent'),
+            borderRadius: flavor?.radius ?? 0,
+            ...contentStyle,
+            ...animationStyle
+        };
+        attributes['style'] = flavor?.backgroundGradient ?
+            mergeStyles(innerStyle, attributes['style']) :
+            mergeStyles(innerStyle, outerStyle, attributes['style']);
 
-    //Final Structure
-    let finalStructure;
+        //Final Structure
+        let finalStructure;
 
-    if(animation) {//In case of animation
-        if(animation.visible) finalStructure = RNAnimatedView({visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes})(isVisible ? structure : null);
-        else finalStructure = RNAnimatedView({visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes})(visible ? structure : null) ;
-    }
-    else finalStructure = RNView({visible: visible, ...attributes})(visible ? structure : null);
-    
-    if(flavor?.backgroundGradient) finalStructure = Gradient({...flavor.backgroundGradient, style: outerStyle})(finalStructure);//In case of backgroundGradient
-    if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);//In case of url links
-    
-    return finalStructure;
-});
+        if(animation) {//In case of animation
+            if(animation.visible) finalStructure = RNAnimatedView({
+                visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes
+            })(isVisible ? structure : null);
+            else finalStructure = RNAnimatedView({
+                visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes
+            })(visible ? structure : null);
+        }
+        else finalStructure = RNView({visible: visible, ...attributes})(visible ? structure : null);
+
+        if(flavor?.backgroundGradient) finalStructure = Gradient({
+            ...flavor.backgroundGradient, style: outerStyle
+        })(finalStructure);//In case of backgroundGradient
+        if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);//In case of url links
+
+        return finalStructure;
+    });
 
 //=============================================================================
 // CUSTOM COMPONENTS:
@@ -396,7 +491,7 @@ export const View = Component('View', true, ({visible=true, content={h:'left', v
 * ```
 * @returns {ReactElement} - The element corresponding to the Text.
 */
-export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => structure => { 
+export const Text = ({flavor = readFlavor('default'), ...attributes} = {}) => structure => {
     const flavorStyle = {
         color: flavor?.textGradient ? 'transparent' : (flavor?.textColor ?? '#333'),
         fontSize: flavor?.textSize ?? 16,
@@ -409,13 +504,19 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
         marginLeft: 0,
         marginRight: 0,
         // lineHeight: 1.5
-    }
+    };
     attributes['style'] = mergeStyles(flavorStyle, attributes['style']);
     if(!flavor?.textGradient) return RNText(attributes)(structure);
-    const textMaskStyle = mergeStyles(attributes['style'], {backgroundColor: 'transparent', color: 'black'});
-    return Masked({style: {flexDirection: 'row'}, maskElement: RNText({...attributes, ...{style: textMaskStyle}})(structure)})(
-        Gradient({...flavor.textGradient, style: {flex: 0, flexWrap: 'wrap'}})(RNText(attributes)(structure)));      
-}
+    const textMaskStyle = mergeStyles(attributes['style'], {
+        backgroundColor: 'transparent', color: 'black'
+    });
+    return Masked({
+        style: {flexDirection: 'row'}, maskElement: RNText({
+            ...attributes, ...{style: textMaskStyle}
+        })(structure)
+    })(Gradient({...flavor.textGradient, style: {flex: 0, flexWrap: 'wrap'}})(
+        RNText(attributes)(structure)));
+};
 
 /** 
 * @description Wrapper component for all the different types of inputs. It allows to work seamlessly with the different types of inputs and 
@@ -448,25 +549,28 @@ export const Text = ({flavor=readFlavor('default'), ...attributes}={}) => struct
 * ```
 * @returns {ReactElement} - The element corresponding to the input.
 */
-export const Input = ({type, options, title, titleStyle, icon, iconStyle, content, flavor=readFlavor('default'), ...attributes}={}) => {   
+export const Input = ({type, options, title, titleStyle, icon, iconStyle, content,
+    flavor = readFlavor('default'), ...attributes} = {}) => {
     //Set a consistent behaviour for onChange attribute
     if(attributes['onChange']) {
-        if(type === 'checkbox' || type === 'switch' || type === 'range' || type === 'date' || type === 'time' || type === 'datetime') {//Non-TextInputs
+        if(type === 'checkbox' || type === 'switch' || type === 'range' || type === 'date' ||
+            type === 'time' || type === 'datetime') {//Non-TextInputs
             attributes['onValueChange'] = attributes['onChange'];
         }
-        else if (type === 'list') {
+        else if(type === 'list') {
             //onChange event returns options object: {key: 'value1', label: 'label1'}. To make it consistent with web only keys are returned
             const onListChange = (onChange) => (options) => {onChange(options.key);};
             attributes['onListChange'] = onListChange(attributes['onChange']);
         }
         else {//TextInput
-            attributes['onChangeText'] = attributes['onChange'];  
+            attributes['onChangeText'] = attributes['onChange'];
         }
         delete attributes['onChange'];
     }
     //Setup text input style
-    if(!type || type === 'text' || type === 'number' || type === 'email' || type === 'url' || type === 'tel' || 
-        type === 'password' || type === 'new-password' || type === 'textarea' || type === 'list' || type === 'button') {
+    if(!type || type === 'text' || type === 'number' || type === 'email' || type === 'url' ||
+        type === 'tel' || type === 'password' || type === 'new-password' || type === 'textarea' ||
+        type === 'list' || type === 'button') {
         const textInputStyle = {
             color: flavor?.textColor ?? '#666',
             fontSize: flavor?.textSize ?? 16,
@@ -483,37 +587,57 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             paddingBottom: 0,
             paddingLeft: 15,
             paddingRight: 15,
-            ...flavor?.shadow ?? 0                
-        }
-        attributes['style'] = mergeStyles(textInputStyle, attributes['style']);  
+            ...flavor?.shadow ?? 0
+        };
+        attributes['style'] = mergeStyles(textInputStyle, attributes['style']);
     }
     if(!type || type === 'text') {//Regular TextInput
         return RNTextInput(attributes);
-    } 
+    }
     //Standard RN RNTextInput-s
-    else if(type === 'number') return RNTextInput({keyboardType: 'numeric', textContentType: 'newPassword', ...attributes});
-    else if(type === 'email') return RNTextInput({keyboardType: 'email-address', autoComplete: 'email', textContentType: 'emailAddress', ...attributes});
-    else if(type === 'url') return RNTextInput({keyboardType: 'url', textContentType: 'URL', ...attributes});
-    else if(type === 'tel') return RNTextInput({keyboardType: 'phone-pad', autoComplete: 'tel', textContentType: 'telephoneNumber', ...attributes});
+    else if(type === 'number') return RNTextInput({
+        keyboardType: 'numeric', textContentType: 'newPassword', ...attributes
+    });
+    else if(type === 'email') return RNTextInput({
+        keyboardType: 'email-address', autoComplete: 'email', textContentType: 'emailAddress',
+        ...attributes
+    });
+    else if(type === 'url') return RNTextInput({
+        keyboardType: 'url', textContentType: 'URL', ...attributes
+    });
+    else if(type === 'tel') return RNTextInput({
+        keyboardType: 'phone-pad', autoComplete: 'tel', textContentType: 'telephoneNumber',
+        ...attributes
+    });
     /*(ios only) paswordRules: 
         When using textContentType as newPassword on iOS we can let the OS know the minimum requirements of the 
         password so that it can generate one that will satisfy them.
     */
-    else if(type === 'password') return RNTextInput({autoComplete: 'password', textContentType: 'password', secureTextEntry: true, ...attributes});
-    else if(type === 'new-password') return RNTextInput({autoComplete: 'password-new', textContentType: 'newPassword', secureTextEntry: true, ...attributes});//TODO: Insert validations
-  
+    else if(type === 'password') return RNTextInput({
+        autoComplete: 'password', textContentType: 'password', secureTextEntry: true, ...attributes
+    });
+    else if(type === 'new-password') return RNTextInput({
+        autoComplete: 'password-new', textContentType: 'newPassword', secureTextEntry: true,
+        ...attributes
+    });//TODO: Insert validations
+
     /*
     RN multiline: It is important to note that this aligns the text to the top on iOS, and centers it on Android. 
     Use with textAlignVertical set to 'top' for the same behavior in both platforms.
     (android only) numberOfLines: Sets the number of lines for a TextInput
     */
-    else if(type === 'textarea'){
+    else if(type === 'textarea') {
         let textAreaStyle = {textAlignVertical: 'top'};
         if(attributes['style'] == null) attributes['style'] = textAreaStyle;
         else if(Array.isArray(attributes['style'])) attributes['style'].unshift(textAreaStyle);
-        else if(typeof attributes['style'] === 'object') attributes['style'] = {...textAreaStyle, ...attributes['style']}; 
-        return RNTextInput({multiline: true, numberOfLines: (attributes['numberOfLines'] ? attributes['numberOfLines'] : 5), ...attributes});
-    } 
+        else if(typeof attributes['style'] === 'object') attributes['style'] = {
+            ...textAreaStyle, ...attributes['style']
+        };
+        return RNTextInput({
+            multiline: true, numberOfLines: (attributes['numberOfLines'] ?
+                attributes['numberOfLines'] : 5), ...attributes
+        });
+    }
 
     //Button Input: It can use same properties as View
     else if(type === 'button') {
@@ -523,9 +647,9 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         if(flavor?.backgroundGradient) delete attributes['style'].backgroundColor;
         return RNTouchableOpacity({onPress: onPress, url: url})(
             View({content: content, flavor: flavor, ...attributes})([
-                (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}), 
+                (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}),
                 Text({style: titleStyle, flavor: flavor})(title)
-        ]));
+            ]));
         //Note: elevation/shadow does not work well with TouchableOpacity, opacity is inconsistent when pressed 
     }
 
@@ -533,12 +657,17 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
     Checkbox uses RN Switch:
     <Switch trackColor={{ false: 'grey', true: 'blue' }} thumbColor={isEnabled ? 'yellow' : "white"} ios_backgroundColor='black' onValueChange={toggleSwitch} value={isEnabled}/>
     */
-    else if(type === 'checkbox' || type === 'switch'){
-        let trackColor = {'false': flavor?.neutralColor ?? '#ccc', 'true': flavor?.primaryColor ?? 'blue'};
+    else if(type === 'checkbox' || type === 'switch') {
+        let trackColor = {
+            'false': flavor?.neutralColor ?? '#ccc', 'true': flavor?.primaryColor ?? 'blue'
+        };
         let ios_backgroundColor = flavor?.neutralColor ?? '#ccc'; //Equivalent to 'false' trackColor
         let thumbColor = 'white';
-        return RNSwitch({trackColor: trackColor, ios_backgroundColor: ios_backgroundColor, thumbColor: thumbColor, ...attributes});
-    } 
+        return RNSwitch({
+            trackColor: trackColor, ios_backgroundColor: ios_backgroundColor,
+            thumbColor: thumbColor, ...attributes
+        });
+    }
 
     /*
     Slider: https://github.com/callstack/react-native-slider/
@@ -552,7 +681,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             maximumTrackTintColor="#000000"
         />
     */
-    else if(type === 'range') { 
+    else if(type === 'range') {
         if(attributes['min']) {
             attributes['minimumValue'] = attributes['min'];
             delete attributes['min'];
@@ -565,9 +694,13 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         maximumTrackTintColor = flavor?.neutralColor ?? "#666";
         thumbTintColor = 'white';
         attributes['style'] = mergeStyles({minWidth: 200}, attributes['style']);
-        return SliderPicker({minimumTrackTintColor: minimumTrackTintColor, maximumTrackTintColor: maximumTrackTintColor, thumbTintColor: thumbTintColor, ...attributes});
+        return SliderPicker({
+            minimumTrackTintColor: minimumTrackTintColor,
+            maximumTrackTintColor: maximumTrackTintColor,
+            thumbTintColor: thumbTintColor, ...attributes
+        });
     }
-    
+
     /*Modal Selector: https://github.com/peacechen/react-native-modal-selector 
     Each item in the items array should be in the following format:  {label: 'Orange', key: 'orange'}
 
@@ -585,7 +718,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
 
     Useful properties: data, onChange, onModalOpen, onModalClose, visible, closeOnChange, initValue, cancelText, disabled, listType, animationType, styling options...
     */
-    else if(type === 'list') {        
+    else if(type === 'list') {
         //Style
         const textStyle = {
             color: flavor?.textColor ?? '#666',
@@ -594,32 +727,45 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             fontWeight: flavor?.textWeight ?? 'normal',
         };
         const selectStyle = {paddingTop: 12, borderWidth: 0, borderColor: 'transparent'};
-        const selectTextStyle = textStyle; 
+        const selectTextStyle = textStyle;
         const selectedItemTextStyle = {...textStyle, color: flavor?.primaryColor ?? 'blue'};
         const optionTextStyle = textStyle;
         const initValueTextStyle = textStyle;
-        const cancelStyle = { backgroundColor: flavor?.dangerColor ?? 'red'};
+        const cancelStyle = {backgroundColor: flavor?.dangerColor ?? 'red'};
         const cancelTextStyle = {...textStyle, color: 'white'};
 
         const value = attributes['value']; delete attributes['value'];
         //const cancelText = 'Cancel'; //Text for the cancel button
 
         //Modal Selector does not implement onBlur and onFocus methods. The closest event functions are onModalOpen and onModalClose
-        if(attributes['onFocus']) {attributes['onModalOpen'] = attributes['onFocus']; delete attributes['onFocus'];}
-        if(attributes['onBlur']) {attributes['onModalClose'] = attributes['onBlur']; delete attributes['onBlur'];}
+        if(attributes['onFocus']) {
+            attributes['onModalOpen'] = attributes['onFocus']; delete attributes['onFocus'];
+        }
+        if(attributes['onBlur']) {
+            attributes['onModalClose'] = attributes['onBlur']; delete attributes['onBlur'];
+        }
 
         //onChange event returns options object: {key: 'value1', label: 'label1'}. To make it consistent with web only keys are returned
-        if(attributes['onListChange']) {attributes['onChange'] = attributes['onListChange']; delete attributes['onListChange'];}
+        if(attributes['onListChange']) {
+            attributes['onChange'] = attributes['onListChange']; delete attributes['onListChange'];
+        }
 
         if(options) {
             //options (array): ['Volvo', 'Mercedes', 'Rolex', 'Cartier'];                           //For simple scenarios    
             //options (array): [{value: 'vol', label: 'Volvo'}, {value: 'mer', label: 'Mercedes'}]; //This is the standard definition 
-            attributes['data'] = options.map(item => {return {key: (typeof item === 'string') ? item : item.value, 
-                                                                            label: (typeof item === 'string') ? item : item.label}});
+            attributes['data'] = options.map(item => {
+                return {
+                    key: (typeof item === 'string') ? item : item.value,
+                    label: (typeof item === 'string') ? item : item.label
+                };
+            });
         }
-        return ListPicker({selectedKey: value, backdropPressToClose: true, selectStyle: selectStyle, selectTextStyle: selectTextStyle, 
-            selectedItemTextStyle: selectedItemTextStyle, optionTextStyle: optionTextStyle, initValueTextStyle: initValueTextStyle, 
-            cancelStyle: cancelStyle, cancelTextStyle: cancelTextStyle, ...attributes});
+        return ListPicker({
+            selectedKey: value, backdropPressToClose: true, selectStyle: selectStyle,
+            selectTextStyle: selectTextStyle, selectedItemTextStyle: selectedItemTextStyle,
+            optionTextStyle: optionTextStyle, initValueTextStyle: initValueTextStyle,
+            cancelStyle: cancelStyle, cancelTextStyle: cancelTextStyle, ...attributes
+        });
     }
 
     /*
@@ -628,13 +774,13 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
     onChange: Date change handler. This is called when the user changes the date or time in the UI. It receives the event and the date as parameters
     maximumDate: Defines the maximum date that can be selected. Note that on Android, this only works for date mode because TimePicker does not support this.
     minimumDate: Defines the minimum date that can be selected. Note that on Android, this only works for date mode because TimePicker does not support this.
-    */    
+    */
     else if(type === 'date') return DTPicker({mode: 'date', ...attributes});
     else if(type === 'time') return DTPicker({mode: 'time', ...attributes});
-    else if(type === 'datetime') return DTPicker({mode: 'datetime', ...attributes})
+    else if(type === 'datetime') return DTPicker({mode: 'datetime', ...attributes});
     //@TODO: else if(type === 'image')
     //@TODO else if(type === 'file')
-}
+};
 
 /** 
 * @description Icon component for SVG icons. It enables using icons from the oneJS icon gallery or your own SVG icons. If you choose to use your own icons, there are
@@ -662,9 +808,10 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
 * ```
 * @returns {ReactElement} - The element corresponding to the Icon.
 */
-export const Icon = Component('Icon', false, ({icon, size=32, raised, flavor=readFlavor('default'), ...attributes}={}) => {
-    if(!icon) return null; 
-    size = flavor?.iconSize ?? size === 'large'? 64 : size === 'small'? 16 : size;
+export const Icon = Component('Icon', false, ({icon, size = 32, raised,
+    flavor = readFlavor('default'), ...attributes} = {}) => {
+    if(!icon) return null;
+    size = flavor?.iconSize ?? size === 'large' ? 64 : size === 'small' ? 16 : size;
     let padding = Math.floor(parseInt(size) / 4);
     const gradient = flavor?.primaryGradient ? readIconGradient(flavor?.primaryGradient) : null;
     const iconStyle = {
@@ -680,7 +827,10 @@ export const Icon = Component('Icon', false, ({icon, size=32, raised, flavor=rea
         height: size + padding * 2
     };
     attributes['style'] = mergeStyles(backgroundStyle, attributes['style']);
-    
+
     const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
-    return View({content: {h: 'center', v: 'center', wrap: false}, flavor: raised ? flavor : undefined, ...attributes})(Xml({xml: iconWithGradient, style: iconStyle}));
+    return View({
+        content: {h: 'center', v: 'center', wrap: false}, flavor: raised ? flavor : undefined,
+        ...attributes
+    })(Xml({xml: iconWithGradient, style: iconStyle}));
 });
