@@ -1,6 +1,6 @@
 {
   "name": "@onejs-dev/components",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Web and native components for oneJS apps.",
   "main": "components.js",
   "react-native": "components.native.js",
