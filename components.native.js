@@ -23,7 +23,6 @@ import React from 'react';
 import {LinearGradient} from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {SvgXml} from 'react-native-svg';
-import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'; //To be able to fetch Icon svg file
 
 //External Component Imports
 import DateTimePicker from '@react-native-community/datetimepicker';//https://github.com/react-native-datetimepicker/datetimepicker
@@ -116,7 +115,7 @@ const Xml = BaseComponent('SvgXml', false, SvgXml);
 *   const fadeOutLeftKeyframes = {opacity: [1,0], transform: [{translateX: [0, -100]}]};
 * ```
 * @property {Object} options - A configuration object specifying the duration and the transition curve (easing).
-* Duration: Specifies the duration of the animation in mililiseconds
+* Duration: Specifies the duration of the animation in milliseconds
 * Easing: Represents the function that the animation follows to transition from one value to another. 
 *   - Predefined animations: bounce, ease, elastic(),
 *   - Standard functions: linear, quad, cubic,
@@ -260,7 +259,8 @@ const animate = (animation, property, animationValue, setSelectedKeyframes, isVi
         if(Array.isArray(animation)) {
             try {selectedAnimation = newValue ? animation[0] : animation[1];}
             catch(error) {
-                console.error("[oneJS]: animation should be in this format: ['in-animation', 'out-animation']");
+                console.error("[oneJS]: animation should be in this format: " +
+                    "['in-animation', 'out-animation']");
                 return;
             }
         }
@@ -302,10 +302,11 @@ const getAnimationStyle = (animationValue, keyframes) => {
     if(!keyframes) return {};
     let animationStyle = {};
     Object.entries(keyframes).forEach(([key, value]) => {
-        if(typeof value[0] === 'number')
+        if(typeof value[0] === 'number') {
             animationStyle[key] = animationValue.interpolate({
                 inputRange: [0, 1], outputRange: value
             });
+        }
         else if(typeof value[0] === 'object') {//Required for transform property (array of objects)
             animationStyle[key] = [];
             value.forEach((item, index) => {
@@ -398,8 +399,10 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
             internalOnPropertyChange = {};
             if(animation && typeof animation === 'object') {
                 Object.entries(animation).forEach(([property, value]) => {
-                    if(value) internalOnPropertyChange[property] = animate(value, property,
-                        animationValue, setSelectedKeyframes, isVisible, setIsVisible);
+                    if(value) {
+                        internalOnPropertyChange[property] = animate(value, property,
+                            animationValue, setSelectedKeyframes, isVisible, setIsVisible);
+                    }
                 });
             }
             exeternalOnPropertyChange = attributes['onPropertyChange'];
@@ -448,18 +451,24 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
         let finalStructure;
 
         if(animation) {//In case of animation
-            if(animation.visible) finalStructure = RNAnimatedView({
-                visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes
-            })(isVisible ? structure : null);
-            else finalStructure = RNAnimatedView({
-                visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes
-            })(visible ? structure : null);
+            if(animation.visible) {
+                finalStructure = RNAnimatedView({
+                    visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes
+                })(isVisible ? structure : null);
+            }
+            else {
+                finalStructure = RNAnimatedView({
+                    visible: visible, onPropertyChange: finalOnPropertyChange, ...attributes
+                })(visible ? structure : null);
+            }
         }
         else finalStructure = RNView({visible: visible, ...attributes})(visible ? structure : null);
 
-        if(flavor?.backgroundGradient) finalStructure = Gradient({
-            ...flavor.backgroundGradient, style: outerStyle
-        })(finalStructure);//In case of backgroundGradient
+        if(flavor?.backgroundGradient) {
+            finalStructure = Gradient({
+                ...flavor.backgroundGradient, style: outerStyle
+            })(finalStructure);
+        }//In case of backgroundGradient
         if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);//In case of url links
 
         return finalStructure;
@@ -595,31 +604,44 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         return RNTextInput(attributes);
     }
     //Standard RN RNTextInput-s
-    else if(type === 'number') return RNTextInput({
-        keyboardType: 'numeric', textContentType: 'newPassword', ...attributes
-    });
-    else if(type === 'email') return RNTextInput({
-        keyboardType: 'email-address', autoComplete: 'email', textContentType: 'emailAddress',
-        ...attributes
-    });
-    else if(type === 'url') return RNTextInput({
-        keyboardType: 'url', textContentType: 'URL', ...attributes
-    });
-    else if(type === 'tel') return RNTextInput({
-        keyboardType: 'phone-pad', autoComplete: 'tel', textContentType: 'telephoneNumber',
-        ...attributes
-    });
+    else if(type === 'number') {
+        return RNTextInput({
+            keyboardType: 'numeric', textContentType: 'newPassword', ...attributes
+        });
+    }
+    else if(type === 'email') {
+        return RNTextInput({
+            keyboardType: 'email-address', autoComplete: 'email', textContentType: 'emailAddress',
+            ...attributes
+        });
+    }
+    else if(type === 'url') {
+        return RNTextInput({
+            keyboardType: 'url', textContentType: 'URL', ...attributes
+        });
+    }
+    else if(type === 'tel') {
+        return RNTextInput({
+            keyboardType: 'phone-pad', autoComplete: 'tel', textContentType: 'telephoneNumber',
+            ...attributes
+        });
+    }
     /*(ios only) paswordRules: 
         When using textContentType as newPassword on iOS we can let the OS know the minimum requirements of the 
         password so that it can generate one that will satisfy them.
     */
-    else if(type === 'password') return RNTextInput({
-        autoComplete: 'password', textContentType: 'password', secureTextEntry: true, ...attributes
-    });
-    else if(type === 'new-password') return RNTextInput({
-        autoComplete: 'password-new', textContentType: 'newPassword', secureTextEntry: true,
-        ...attributes
-    });//TODO: Insert validations
+    else if(type === 'password') {
+        return RNTextInput({
+            autoComplete: 'password', textContentType: 'password', secureTextEntry: true,
+            ...attributes
+        });
+    }
+    else if(type === 'new-password') {
+        return RNTextInput({
+            autoComplete: 'password-new', textContentType: 'newPassword', secureTextEntry: true,
+            ...attributes
+        });
+    }//TODO: Insert validations
 
     /*
     RN multiline: It is important to note that this aligns the text to the top on iOS, and centers it on Android. 
@@ -630,9 +652,9 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         let textAreaStyle = {textAlignVertical: 'top'};
         if(attributes['style'] == null) attributes['style'] = textAreaStyle;
         else if(Array.isArray(attributes['style'])) attributes['style'].unshift(textAreaStyle);
-        else if(typeof attributes['style'] === 'object') attributes['style'] = {
-            ...textAreaStyle, ...attributes['style']
-        };
+        else if(typeof attributes['style'] === 'object') {
+            attributes['style'] = {...textAreaStyle, ...attributes['style']};
+        }
         return RNTextInput({
             multiline: true, numberOfLines: (attributes['numberOfLines'] ?
                 attributes['numberOfLines'] : 5), ...attributes

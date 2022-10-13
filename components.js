@@ -354,10 +354,12 @@ const animate = (animation, property) => (newValue, component) => {
         component.animationController = component.animate(selectedAnimation.keyframes,
             selectedAnimation.options);
         component.animationController.onfinish = () => {
-            if(selectedAnimation.style) Object.keys(selectedAnimation.style).forEach(
-                (key, value) => {
-                    component.style[key] = selectedAnimation.style[key];
-                });
+            if(selectedAnimation.style) {
+                Object.keys(selectedAnimation.style).forEach(
+                    (key, value) => {
+                        component.style[key] = selectedAnimation.style[key];
+                    });
+            }
         };
     }
     catch(error) {console.error(error);}
@@ -1121,8 +1123,9 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
                 const rotate = offset.x * 0.1;
                 component.style.transform = `translate(${offset.x}px, ${offset.y}px) 
                     rotate(${rotate}deg)`;
-                if(Math.abs(offset.x) > component.clientWidth * 0.7)
+                if(Math.abs(offset.x) > component.clientWidth * 0.7) {
                     setPotentialDirection(offset.x > 0 ? 'right' : 'left');
+                }
                 else if(-1 * offset.y > component.clientHeight * 0.5 && Math.abs(offset.x) <
                     component.clientWidth * 0.3) setPotentialDirection('up');
                 else setPotentialDirection('');
@@ -1153,12 +1156,14 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
                 component.style.transition = 'transform 0.3s';
                 const vector = direction === 'right' ? 1 : -1; //The direction vector equals 1 for 
                 //right and -1 for left and up
-                if(direction === 'right' || direction === 'left')
+                if(direction === 'right' || direction === 'left') {
                     component.style.transform = `translate(${vector * window.innerWidth}px, 
-                    ${offset.y}px) rotate(${90 * vector}deg)`;
-                if(direction === 'up')
+                        ${offset.y}px) rotate(${90 * vector}deg)`;
+                }
+                if(direction === 'up') {
                     component.style.transform = `translate(${offset.x}px,
                         ${-1 * window.innerHeight}px)`;
+                }
                 component.classList.add('dismissing');
                 setTimeout(() => {
                     component.remove();
@@ -1181,8 +1186,9 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
             window.addEventListener('swipe' + index, async (e) => dismiss(e.detail), false);
 
             document.addEventListener(moveEvents[device].end, handleMoveEnd);
-            if(device === 'mouse') component.addEventListener('dragstart',
-                (e) => e.preventDefault());
+            if(device === 'mouse') {
+                component.addEventListener('dragstart', (e) => e.preventDefault());
+            }
             else document.addEventListener('cancel', handleMoveEnd);
         };
         const swipe = index => direction => () => {
@@ -1246,7 +1252,7 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
         };
         const leftFlavor = flavor?.rejectColor ? {...flavor, primaryColor: flavor.rejectColor} :
             flavor;
-        let rightFlavor = flavor?.acceptColor ? {...flavor, primaryColor: flavor.acceptColor} : 
+        let rightFlavor = flavor?.acceptColor ? {...flavor, primaryColor: flavor.acceptColor} :
             flavor;
 
         //limit to 5 cards
