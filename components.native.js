@@ -25,14 +25,18 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import {SvgXml} from 'react-native-svg';
 
 //External Component Imports
-import DateTimePicker from '@react-native-community/datetimepicker';//https://github.com/react-native-datetimepicker/datetimepicker
+import DateTimePicker from '@react-native-community/datetimepicker';
+//https://github.com/react-native-datetimepicker/datetimepicker
+
 import Slider from '@react-native-community/slider';
-import ModalSelector from 'react-native-modal-selector'; //https://github.com/peacechen/react-native-modal-selector 
+import ModalSelector from 'react-native-modal-selector'; 
+//https://github.com/peacechen/react-native-modal-selector 
+
 //There are other options for pickers:
 //https://github.com/lawnstarter/react-native-picker-select (outdated)
 //https://github.com/react-native-picker/picker (does not have a data property, needs indented tags)
 
-//=============================================================================
+//==================================================================================================
 // STANDARD COMPONENTS:
 // React Native standard components to be used iOS and Android.
 // Naming convention: Exact same name as in React Native.
@@ -40,7 +44,7 @@ import ModalSelector from 'react-native-modal-selector'; //https://github.com/pe
 //    'Text' is 'RNText'. oneJS provides a Text component with additional functionalities.
 //    'View' is 'RNView'. oneJS provides a View component with additional functionalities.
 //    'Animated.View' is 'AnimatedView' 
-//=============================================================================
+//==================================================================================================
 
 //React Native Components
 export const RNActivityIndicator = BaseComponent('ActivityIndicator', false, _RNActivityIndicator);
@@ -76,27 +80,34 @@ export const RNSafeAreaView = BaseComponent('SafeAreaView', true, _RNSafeAreaVie
 export const RNAnimatedView = BaseComponent('Animated.View', true, Animated.View);
 
 //External Compoenets
-const ListPicker = BaseComponent('ModalSelector', false, ModalSelector);    //https://github.com/peacechen/react-native-modal-selector 
-const DTPicker = BaseComponent('DateTimePicker', false, DateTimePicker);    //https://github.com/react-native-datetimepicker/datetimepicker
-const SliderPicker = BaseComponent('Slider', false, Slider);                //https://github.com/callstack/react-native-slider/
+const ListPicker = BaseComponent('ModalSelector', false, ModalSelector);    
+//https://github.com/peacechen/react-native-modal-selector 
+
+const DTPicker = BaseComponent('DateTimePicker', false, DateTimePicker);    
+//https://github.com/react-native-datetimepicker/datetimepicker
+
+const SliderPicker = BaseComponent('Slider', false, Slider);                
+//https://github.com/callstack/react-native-slider/
 
 //Gradient Components
 const Gradient = BaseComponent('LinearGradient', true, LinearGradient);
 const Masked = BaseComponent('MaskedView', true, MaskedView);
 const Xml = BaseComponent('SvgXml', false, SvgXml);
 
-//=============================================================================
+//==================================================================================================
 // VIEW COMPONENT:
-// View: Base component to organize content. Containes features that allow:
+// View: Base component to organize content. Contains features that allow:
 //    - Responsive animations when the following properties are modified: 
 //      visible and active (current url matches target url).
 //    - Intuitive positioning of the content.
 //    - Declarative routing just by setting the url property.
-//============================================================================= 
+//================================================================================================== 
 
 /**
-* @typedef  {Object} Animation - The configuration for the animation to be executed on the component for the different property value changes.
-* @property {Object} keyframes - An object specifying the different values for the style properties for each keyframe. The are two ways to define keyframes:
+* @typedef  {Object} Animation - The configuration for the animation to be executed on the component
+* for the different property value changes.
+* @property {Object} keyframes - An object specifying the different values for the style properties 
+* for each keyframe. The are two ways to define keyframes:
 * ```javascript 
 *   //Option A: Object of Arrays
 *   const keyframesA = {opacity: [0, 1], scale: [0, 1]};
@@ -104,9 +115,11 @@ const Xml = BaseComponent('SvgXml', false, SvgXml);
 *   //Option B: Array of objects
 *   const keyframesB = [{opacity: 0, scale: 0}, {opacity: 1, scale: 1}];
 * ```
-* It is preferable to use option A mainly for two reasons: 1) It is more aligned with oneJS definitions. 2) It is less wordy. 
+* It is preferable to use option A mainly for two reasons: 1) It is more aligned with oneJS 
+* definitions. 2) It is less wordy. 
 * In React Native transform options differ from Web. The following options are available:
-* perspective, rotate, rotateX, rotateY, rotateZ, scale, scaleX, scaleY, translateX, translateY, skewX, skewY
+* perspective, rotate, rotateX, rotateY, rotateZ, scale, scaleX, scaleY, translateX, translateY, 
+* skewX, skewY
 * ```javascript 
 *   //Transform on Web
 *   const fadeOutLeftKeyframes = {opacity: [1,0], transform: ['translate3d(-100%, 0, 0)', 'none']};
@@ -114,9 +127,11 @@ const Xml = BaseComponent('SvgXml', false, SvgXml);
 *   //Equivalent transformation on React Native
 *   const fadeOutLeftKeyframes = {opacity: [1,0], transform: [{translateX: [0, -100]}]};
 * ```
-* @property {Object} options - A configuration object specifying the duration and the transition curve (easing).
+* @property {Object} options - A configuration object specifying the duration and the transition 
+* curve (easing).
 * Duration: Specifies the duration of the animation in milliseconds
-* Easing: Represents the function that the animation follows to transition from one value to another. 
+* Easing: Represents the function that the animation follows to transition from one value to
+*         another. 
 *   - Predefined animations: bounce, ease, elastic(),
 *   - Standard functions: linear, quad, cubic,
 *   - Additional functions: bezier(), circle, sin, exp,
@@ -127,11 +142,15 @@ const Xml = BaseComponent('SvgXml', false, SvgXml);
 * @example
 * ```javascript 
 *   //Fade Out animation
-*   fadeOutAnimation = {keyframes: {opacity: [1, 0], display: ['flex', 'none']}, options: {duration: 300, easing: Easing.ease}};
+*   fadeOutAnimation = {
+*       keyframes: {opacity: [1, 0], display: ['flex', 'none']}, 
+*       options: {duration: 300, easing: Easing.ease}
+*   };
 * ```
 */
 /** 
-* @description A bundle of preset entry and exit animatios for the View component on property changes. These animations are defined following the RN Animations API.
+* @description A bundle of preset entry and exit animatios for the View component on property 
+* changes. These animations are defined following the RN Animations API.
 * Reference: [React Native]{@link https://reactnative.dev/docs/animations}
 * @example
 * ```javascript 
@@ -225,15 +244,20 @@ const animations = {
 };
 
 /** 
-* @description Whenever a property that is being observed changes in the View component, the animate function is called. Based on the animation
-* provided, the target component is animated.
+* @description Whenever a property that is being observed changes in the View component, the animate
+*  function is called. Based on the animation provided, the target component is animated.
 * Animations work different on React Native than on the web:
-*   - On the web by calling animate the API automatically interpolates the styles of the component following the keyframes and easing curve.
-*   - On native, when the animation starts, it provides a value that is being interpolated from 0 (start) to 1 (end). This value is then used to interpolate
-*     the style values and apply them to the target component.
-* @param {Array<String> | Array<Animation> | Map} animation - The animation to be executed on the component for the different property value changes. If defined
-* as an array, the first value is the animation for the property turning true, while the second is the animation for the property turning false. 
-* Each of the individual animation can be defined as string, if one of the preset animations is to be used, or an object following the Animation structure.
+*   - On the web by calling animate the API automatically interpolates the styles of the component 
+*     following the keyframes and easing curve.
+*   - On native, when the animation starts, it provides a value that is being interpolated from 0 
+*     (start) to 1 (end). This value is then used to interpolate the style values and apply them to
+*     the target component.
+* @param {Array<String> | Array<Animation> | Map} animation - The animation to be executed on the 
+* component for the different property value changes. If defined as an array, the first value is the
+* animation for the property turning true, while the second is the animation for the property 
+* turning false. 
+* Each of the individual animation can be defined as string, if one of the preset animations is to 
+* be used, or an object following the Animation structure.
 * The animation can also be a Map object, relating the property values to the different animations.
 * ```javascript 
 *   const myAnimation = Map();
@@ -273,7 +297,10 @@ const animate = (animation, property, animationValue, setSelectedKeyframes, isVi
         //Setup selected animation for string (take it from the predesigned animations)
         if(typeof selectedAnimation === 'string') {
             selectedAnimation = animations[selectedAnimation];
-            if(!selectedAnimation) {console.warn('No such animation: ' + selectedAnimation); return;}
+            if(!selectedAnimation) {
+                console.warn('No such animation: ' + selectedAnimation); 
+                return;
+            }
         }
 
         //Generate animation
@@ -290,13 +317,15 @@ const animate = (animation, property, animationValue, setSelectedKeyframes, isVi
 
 /** 
 * @description Generates the style interpolated according the animation frames and value.
-* @param {Number} animationValue - The value that determines the point in the interpolation. Goes from 0 (start) to 1 (end).
+* @param {Number} animationValue - The value that determines the point in the interpolation. Goes 
+* from 0 (start) to 1 (end).
 * @param {Object} keyframes - Contains the styles to be interpolated.
 * @example
 * ```javascript
 *   getAnimationStyle(0.5, {opacity: [0, 1], height: [10, 30]}); //Output: {opacity: 0.5, height: 20}
 * ```
-* @returns {Object} - The result of interpolating the styles in the keyframes according to the animation value.
+* @returns {Object} - The result of interpolating the styles in the keyframes according to the
+* animation value.
 */
 const getAnimationStyle = (animationValue, keyframes) => {
     if(!keyframes) return {};
@@ -324,10 +353,12 @@ const getAnimationStyle = (animationValue, keyframes) => {
 };
 
 /**
-* @typedef  {Object}  Url - The configuration structure required by urlSetup function. It enables displaying or hiding the View based on the url, adding an
-* 'active' attribute or making it clickable redirecting the user to the chosen url.
+* @typedef  {Object}  Url - The configuration structure required by urlSetup function. It enables
+*  displaying or hiding the View based on the url, adding an 'active' attribute or making it 
+* clickable redirecting the user to the chosen url.
 * Principles: All url-s must start with '/' because all url-s are absolute.
-* Naming: '*' represents any value for a given segment. At the end of the url, e.g.'/path/to/end/*' means any number of segments after
+* Naming: '*' represents any value for a given segment. At the end of the url, e.g.'/path/to/end/*'
+*         means any number of segments after
 * Note: The page root has a url '/'. This can only be matched by target url '/' or '* /'
 * Note: Actual url ignores anchors (root/home/#anchor/path === root/home)
 * ```javascript
@@ -336,43 +367,57 @@ const getAnimationStyle = (animationValue, keyframes) => {
 *   matchUrl('/* /* /page') //Matches
 *   matchUrl('/* /to')      //Does not match
 *   matchUrl('/* /to/*')    //Matches
-* @property {String}  [visible]             - The url for the component to be visible.
-* @property {String}  [active]              - The url for the component to be active.
-* @property {String}  [link]                - The url to be redirected to when clicking the component.
+* @property {String}  [visible]           - The url for the component to be visible.
+* @property {String}  [active]            - The url for the component to be active.
+* @property {String}  [link]              - The url to be redirected to when clicking the component.
 * @example
 * ```javascript 
 *   const myUrl = {visible: '/*', active: '/home/*', link: '/home'}
 * ```
 */
 /** 
-* @description A powerful component that acts as a container for other base components. It behaves like React Native view block with some additional features such as
-* routing, positioning, animations and lifecycle events.
+* @description A powerful component that acts as a container for other base components. It behaves 
+* like React Native view block with some additional features such as routing, positioning,
+* animations and lifecycle events.
 * @param {Boolean} visible - Determines whether the View is visible on the screen or not.
-* @param {Function} onVisibleChange - The function called when the 'visible' property is modified due to url changes. 
-* It can be used to update the 'visible' state variable.
-* @param {Boolean} active - Determines whether the View is active or not. Being active means that the current url matches the target url of this component.
-* @param {Function} onActiveChange - The function called when the 'active' property is modified due to url changes. 
-* It can be used to update the 'active' state variable.
+* @param {Function} onVisibleChange - The function called when the 'visible' property is modified 
+* due to url changes. It can be used to update the 'visible' state variable.
+* @param {Boolean} active - Determines whether the View is active or not. Being active means that 
+* the current url matches the target url of this component.
+* @param {Function} onActiveChange - The function called when the 'active' property is modified due
+* to url changes. It can be used to update the 'active' state variable.
 * @param {Content} content - The configuration specifying the positioning of the component's content.
-* @param {Object} self - The configuration specifying the positioning of the component itself with respect to its siblings.
-*   - expand: Ability for a flex component to grow if there is extra space (0 CSS default). The greater the number, the greater the expansion 
-*             with respect to other sibling components able to expand. 0 means the component is unable to expand.
-*   - shrink: Ability for a flex component to shrink if there is not enough space (1 CSS default). The greater the number, the greater the shrinkage 
-*             with respect to other sibling components able to shrink. 0 means the component is unable to shrink.
-*   - align:  It allows to override the transversal (perpendicular to the content direction) positioning set by the parent with the 'content' property.
-*             E.g. If the parent sets the content to be aligned in a row on top, with the self property child element can override this behaviour.
-* @param {Array<String> | Array<Object> | Map} animation - The animation to be executed on the component for the different property value changes.
-* @param {Url} [url] - The configuration structure required to make routing possible. It enables displaying or hiding the View based on the url, adding an
-* 'active' attribute or making it clickable redirecting the user to the chosen url.
+* @param {Object} self - The configuration specifying the positioning of the component itself with 
+* respect to its siblings.
+*   - expand: Ability for a flex component to grow if there is extra space (0 CSS default). The 
+*     greater the number, the greater the expansion with respect to other sibling components able to
+*     expand. 0 means the component is unable to expand.
+*   - shrink: Ability for a flex component to shrink if there is not enough space (1 CSS default). 
+*     The greater the number, the greater the shrinkage with respect to other sibling components 
+*     able to shrink. 0 means the component is unable to shrink.
+*   - align:  It allows to override the transversal (perpendicular to the content direction) 
+*     positioning set by the parent with the 'content' property.
+*     E.g. If the parent sets the content to be aligned in a row on top, with the self property 
+*     child element can override this behavior.
+* @param {Array<String> | Array<Object> | Map} animation - The animation to be executed on the 
+* component for the different property value changes.
+* @param {Url} [url] - The configuration structure required to make routing possible. It enables 
+* displaying or hiding the View based on the url, adding an 'active' attribute or making it 
+* clickable redirecting the user to the chosen url.
 *       - Active: Determines when the active attribute is set.
-*       - Visible: Determines when the visible attribute is set and therefore displayed on the screen.
+*       - Visible: Determines when the visible attribute is set and therefore displayed on the 
+*         screen.
 *       - Link: Determines the url where the app is routed to when the element is clicked.
 *       - Example: view({url: {visible: '/* /* /events', active: '/* /* /events'}})('content')
 * @param {Component} [structure] - The component structure to be rendered inside the view.
-* @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables. For view the default flavor is not inherited.
+* @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables. 
+* For view the default flavor is not inherited.
 * @example
 * ```javascript 
-*   View({visible: read('isVisible'), onVisibleChange: update('isVisible'), url: {visible: '/home1', link: 'home2'}, content: {v: 'top', h: 'left'}, expand: 1})('hello world');
+*   View({
+*       visible: read('isVisible'), onVisibleChange: update('isVisible'), 
+*       url: {visible: '/home1', link: 'home2'}, content: {v: 'top', h: 'left'}, self: {expand: 1}
+*   })('hello world');
 * ```
 * @returns {ReactElement} - The element corresponding to the View.
 */
@@ -386,7 +431,7 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
         let setIsVisible;                   //Sets isVisible value.
         let animationStyle = {};             //The style computed as an interpolation from the keyframes and the animationValue.
         let internalOnPropertyChange = {};   //An object with the animate functions to be called for the selected properties in the animation configuration.
-        let exeternalOnPropertyChange;      //An object with the onPropertyChange attribute set by the user during instantiation.
+        let externalOnPropertyChange;      //An object with the onPropertyChange attribute set by the user during instantiation.
         let finalOnPropertyChange;          //The result of combining internalOnPropertyChange and externalOnPropertyChange
 
         if(animation) {
@@ -405,9 +450,9 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
                     }
                 });
             }
-            exeternalOnPropertyChange = attributes['onPropertyChange'];
-            finalOnPropertyChange = exeternalOnPropertyChange ? {
-                ...internalOnPropertyChange, ...exeternalOnPropertyChange
+            externalOnPropertyChange = attributes['onPropertyChange'];
+            finalOnPropertyChange = externalOnPropertyChange ? {
+                ...internalOnPropertyChange, ...externalOnPropertyChange
             } : internalOnPropertyChange;//Compose internal and external onPropertyChange
             delete attributes['onPropertyChange'];
         }
@@ -474,7 +519,7 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
         return finalStructure;
     });
 
-//=============================================================================
+//==================================================================================================
 // CUSTOM COMPONENTS:
 // Provides reusable components similar to native components. Consists of the 
 // following components:
@@ -487,16 +532,19 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
 // Modal: Base component to display overlaying content.
 // Slider: Creates stacked views that allow the user to slide across the component's
 //         children.
-//============================================================================= 
+//================================================================================================== 
 
 
 /** 
-* @description Standard text component to wrap all the texts in the application. It enables creating gradient texts setting textGradient theme variable.
+* @description Standard text component to wrap all the texts in the application. It enables creating
+* gradient texts setting textGradient theme variable.
 * @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
 * @param {Component} [structure] - The component structure to be rendered inside the slider.
 * @example
 * ```javascript 
-*   const myText = Text({flavor: {textGradient: generateGradient({colors: ['red', 'blue']})}})('Hello World!');
+*   const myText = Text({
+*        flavor: {textGradient: generateGradient({colors: ['red', 'blue']})}
+*   })('Hello World!');
 * ```
 * @returns {ReactElement} - The element corresponding to the Text.
 */
@@ -528,33 +576,52 @@ export const Text = ({flavor = readFlavor('default'), ...attributes} = {}) => st
 };
 
 /** 
-* @description Wrapper component for all the different types of inputs. It allows to work seamlessly with the different types of inputs and 
-* react to the change events. It also provides styling options through the use of flavors.
+* @description Wrapper component for all the different types of inputs. It allows to work seamlessly
+* with the different types of inputs and react to the change events. It also provides styling
+* options through the use of flavors.
 * Web input types: 
-*   'button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 
-*   'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week'
+*   'button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 
+*   'month', 'number', 'password', 'radio', 'range', 'reset', 'search', 'submit', 'tel', 'text', 
+*   'time', 'url', 'week'
 * Native input types:
-*   - Touchable Opacity: 'button'                                                        [React Native]{@link https://reactnative.dev/docs/touchableopacity}
-*   - Switch:            'checkbox'                                                      [React Native]{@link https://reactnative.dev/docs/switch}
-*   - Text Input:        'email', 'number', 'password', 'tel', 'text', 'textarea', 'url' [React Native]{@link https://reactnative.dev/docs/textinput}
-*   - Slider:            'range'                                                         [Github]{@link https://github.com/callstack/react-native-slider/tree/main/src}
-*   - Modal Selector:    'list'                                                          [Github]{@link https://github.com/peacechen/react-native-modal-selector }
-*   - Datetime Picker:   'date', 'time', 'datetime'                                      [Github]{@link https://github.com/react-native-datetimepicker/datetimepicker}
-* Change events: Whenever a form field is changed, the event is fired. Works the same as web's 'onInput' event. On oneJS always use 'onChange' for a consisten behavior.
+*   - Touchable Opacity: 'button'                                                        
+*         [React Native]{@link https://reactnative.dev/docs/touchableopacity}
+*   - Switch:            'checkbox'                                                      
+*         [React Native]{@link https://reactnative.dev/docs/switch}
+*   - Text Input:        'email', 'number', 'password', 'tel', 'text', 'textarea', 'url' 
+*         [React Native]{@link https://reactnative.dev/docs/textinput}
+*   - Slider:            'range'                                                         
+*         [Github]{@link https://github.com/callstack/react-native-slider/tree/main/src}
+*   - Modal Selector:    'list'    
+*         [Github]{@link https://github.com/peacechen/react-native-modal-selector }
+*   - Datetime Picker:   'date', 'time', 'datetime'  
+*         [Github]{@link https://github.com/react-native-datetimepicker/datetimepicker}
+* Change events: Whenever a form field is changed, the event is fired. Works the same as web's 
+* 'onInput' event. On oneJS always use 'onChange' for a consistent behavior.
 *   - TextInput: 
-*       - onChange: Invoked when the user changes the value of the text input.Receives the change event as an argument.
-*       - onChangeText: Invoked when the user changes the value of the text input.Receives the change value as an argument.
+*       - onChange: Invoked when the user changes the value of the text input.Receives the change
+*         event as an argument.
+*       - onChangeText: Invoked when the user changes the value of the text input.Receives the 
+*         change value as an argument.
 *   - Switch: 
-*       - onChange: Invoked when the user changes the value of the switch input.Receives the change event as an argument.
-*       - onValueChange: Invoked when the user changes the value of the switch input.Receives the change value as an argument.
+*       - onChange: Invoked when the user changes the value of the switch input.Receives the change
+*         event as an argument.
+*       - onValueChange: Invoked when the user changes the value of the switch input.Receives the 
+*         change value as an argument.
 * Content types for TextInput in iOS and Android:
-*   - Android: 'autoComplete' specifies autocomplete hints for the system, so it can provide autofill. [React Native]{@link https://reactnative.dev/docs/textinput#autocomplete-android}
-*   - iOS: 'textContentType' specifies autocomplete hints for the system, so it can provide autofill. [React Native]{@link https://reactnative.dev/docs/textinput#textcontenttype-ios}
-* @param {String} [type] - The type of input, any of the standard html input types plus 'range', 'list' and 'textarea'.
+*   - Android: 'autoComplete' specifies autocomplete hints for the system, so it can provide 
+*     autofill. [React Native]{@link https://reactnative.dev/docs/textinput#autocomplete-android}
+*   - iOS: 'textContentType' specifies autocomplete hints for the system, so it can provide 
+*     autofill. [React Native]{@link https://reactnative.dev/docs/textinput#textcontenttype-ios}
+* @param {String} [type] - The type of input, any of the standard html input types plus 'range', 
+* 'list' and 'textarea'.
 * @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
 * @example
 * ```javascript 
-*   const myInput = Input({type: 'list', options: [{value: 'vol', label: 'Volvo'}, {value: 'mer', label: 'Mercedes'}], flavor: 'danger'})
+*   const myInput = Input({
+*        type: 'list', options: [{value: 'vol', label: 'Volvo'}, {value: 'mer', label: 'Mercedes'}], 
+*        flavor: 'danger
+*   '});
 * ```
 * @returns {ReactElement} - The element corresponding to the input.
 */
@@ -805,28 +872,30 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
 };
 
 /** 
-* @description Icon component for SVG icons. It enables using icons from the oneJS icon gallery or your own SVG icons. If you choose to use your own icons, there are
-* three options: 
-*   - Use webpack to import the raw SVG. [Pluralsight]{@link https://www.pluralsight.com/guides/how-to-load-svg-with-react-and-webpack}
-*   - Create a .js file exporting the raw SVG as a string. Example: export myIconFont = {icon1: <svg>...</svg>, icon2: <svg>...</svg>}
-*   - Use require() to fetch the icon. This option may delay the loading of the icon after the first paint.
+* @description Icon component for SVG icons. It enables using icons from the oneJS icon gallery or
+* your own SVG icons. If you choose to use your own icons, there are two options: 
+*   - Use webpack to import the raw SVG. 
+*     [Pluralsight]{@link https://www.pluralsight.com/guides/how-to-load-svg-with-react-and-webpack}
+*   - Create a .js file exporting the raw SVG as a string. 
+*     Example: export myIconFont = {icon1: <svg>...</svg>, icon2: <svg>...</svg>}
 * Useful icon fonts:
 * [Google]{@link https://fonts.google.com/icons?selected=Material+Icons}
 * [FontAwesome]{@link https://fontawesome.com/icons}
 * [The Noun Project]{@link https://thenounproject.com}
-* @param {String} [icon] - The name of the icon to be selected from the iconFont object.
-* @param {Object} [iconFont] - An object containing the different icon names as property keys whose value is the raw SVG in a string.
-* @param {Object} [iconFile] - The path to the .svg icon to be loaded using the 'require' function.
+* @param {String} [icon] - The raw string of the svg icon. E.g.: '<svg>...</svg>'.
 * @param {Boolean} [raised] - If true, adds background to the icon simulating a raised button.
-* @param {String | Number} [size] - Adjusts the size of the icon. For strings, 'large', 'medium' and 'small' options are available. Numbers represent the pixel size of the icon
+* @param {String | Number} [size] - Adjusts the size of the icon. For strings, 'large', 'medium' and
+* 'small' options are available. Numbers represent the pixel size of the icon
 * @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
 * @example
 * ```javascript 
-*   import {myIconFont} from './myIconFont.js'; //Using external icon font as a JS object. 'icon2' in the example below
+*   import {myIcon} from './myIcon.svg';        //Configuring webpack to import an .svg. 
+*                                               //'icon1' in the example below
+*   import {myIconFont} from './myIconFont.js'; //Using external icon font as a JS object. 
+*                                               //'icon2' in the example below
 *   
-*   const icon1 = Icon({iconFile: require('./path/to/icon/icon.svg'), raised: true, size: 'small'});
-*   const icon2 = Icon({icon: 'icon2', iconFont: myIconFont, size: 40});
-*   const icon3 = Icon({icon: 'oneJS', flavor: 'danger'});
+*   const icon1 = Icon({icon: myIcon, raised: true, size: 'small'});
+*   const icon2 = Icon({icon: myIconFont['myOtherIcon'], iconFont: myIconFont, size: 40});
 * ```
 * @returns {ReactElement} - The element corresponding to the Icon.
 */

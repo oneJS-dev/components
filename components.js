@@ -1,5 +1,5 @@
 import {
-    matchUrl, Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles
+    Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles
 } from '@onejs-dev/core';
 
 //==================================================================================================
@@ -206,9 +206,21 @@ export const HtmlWbr = BaseComponent('HtmlWbr', false, 'wbr');
 *   const myView = View({animation: {visible: ['fade-in', 'shrink']}})(Text()('Hello World!'));
 * ```
 */
-export const animations = {
+const animations = {
     'appear': {style: {display: 'flex'}},
     'disappear': {style: {display: 'none'}},
+    'subtle-in': {
+        keyframes: {
+            opacity: [0, 1], translate: ['0 -30%', 'none'], filter: ['blur(5px)', 'blur(0)']
+        },
+        options: {duration: 500, easing: 'ease-in-out'}
+    },
+    'subtle-out': {
+        keyframes: {
+            opacity: [1, 0], translate: ['none', '0 -30%'], filter: ['blur(0)', 'blur(5px)']
+        },
+        options: {duration: 500, easing: 'ease-in-out'}
+    },
     'fade-in': {
         keyframes: {opacity: [0, 1], 'webkit-transform': 'none'},
         options: {duration: 300, easing: 'ease-in-out'}
@@ -349,11 +361,15 @@ const animate = (animation, property) => (newValue, component) => {
         }
     }
 
-    component.style.display = 'flex'; //Makes sure the animation is always displayed       
+    component.style.display = 'flex'; //Makes sure the animation is always displayed  
+    //For intersect property, remove the opacity to display animation
+    if(property === 'intersect') component.style.removeProperty('opacity');
+
     try {
         component.animationController = component.animate(selectedAnimation.keyframes,
             selectedAnimation.options);
         component.animationController.onfinish = () => {
+            //Apply styles to the component after the animation
             if(selectedAnimation.style) {
                 Object.keys(selectedAnimation.style).forEach(
                     (key, value) => {
@@ -421,12 +437,38 @@ due to url changes.
 */
 export const View = ({type, visible = true, onVisibleChange = () => {}, active = false,
     onActiveChange = () => {}, content = {h: 'left', v: 'top'}, self, animation, flavor,
-    ...attributes} = {}) => structure => {
+    onIntersect = () => {}, ...attributes} = {}) => structure => {
         //Set onPropertyChange callback functions
         let internalOnPropertyChange = {};
         if(animation && typeof animation === 'object') {
             Object.entries(animation).forEach(([property, value]) => {
-                if(value) internalOnPropertyChange[property] = animate(value, property);
+                //For 'intersect' property attach intersection observer
+                if(property === 'intersect') {
+                    attributes['onCreate'] = (component) => {
+                        if(!component) return;
+                        //Needs to be 'visible' to ocupy space and intersect with the screen but  
+                        //transparent. When the animation finished, the 'opacity' property is
+                        //removed
+                        component.style.opacity = 0;
+                        //Determines if an component is visible on the screen
+                        const callback = (entries, observer) => {
+                            entries.forEach(entry => {
+                                if(entry.isIntersecting) {
+                                    onIntersect(true);
+                                    animate([value], 'intersect')(true, component);
+                                    observer.unobserve(component);
+                                }
+                            });
+                        };
+                        //https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
+                        const observer = new IntersectionObserver(callback);
+                        const options = {
+                            threshold: 0.50 //50% on screen
+                        };
+                        observer.observe(component, options);
+                    };
+                }
+                else if(value) internalOnPropertyChange[property] = animate(value, property);
             });
         }
         const externalOnPropertyChange = attributes['onPropertyChange'];
@@ -477,10 +519,48 @@ export const View = ({type, visible = true, onVisibleChange = () => {}, active =
         visible = visible === true ? 1 : (visible === false ? 0 : visible);
         active = active === true ? 1 : (active === false ? 0 : active);
 
-        return HtmlDiv({
-            visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
-            ...attributes
-        })(structure);
+        if(!type || type === 'div' || type === 'block') {
+            return HtmlDiv({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
+        if(type === 'header') {
+            return HtmlHeader({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
+        if(type === 'article') {
+            return HtmlArticle({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
+        if(type === 'section') {
+            return HtmlSection({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
+        if(type === 'main') {
+            return HtmlMain({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
+        if(type === 'footer') {
+            return HtmlFooter({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
+        if(type === 'nav' || type === 'navbar') {
+            return HtmlNav({
+                visible: visible, active: active, onPropertyChange: finalOnPropertyChange,
+                ...attributes
+            })(structure);
+        }
     };
 
 //==================================================================================================
@@ -500,6 +580,7 @@ export const View = ({type, visible = true, onVisibleChange = () => {}, active =
 
 /** 
 * @description Standard text component to wrap all the texts in the application.
+* @deprecated Use input({type: 'button'}) instead
 */
 // export const Text = BaseComponent('Text', true, 'p');
 export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => structure => {
@@ -542,8 +623,33 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
 /** 
 * @description Standard text component to wrap all the texts in the application.
 */
-// export const Text = BaseComponent('Text', true, 'p');
-export const Text = ({flavor = readFlavor('default'), ...attributes} = {}) => structure => {
+/** 
+* @description Wrapper component for all the different types of inputs. It allows to work seamlessly
+* with the different types of inputs and react to the change events. It also provides styling 
+* options through the use of flavors.
+* @param {String} [type] - The type of input, any of the standard html input types plus 'range', 
+* 'list' and 'textarea'.
+* @param {Array<Object>} [options] - The options to be provided in 'list' or 'select' input types. 
+* They should follow the following format:
+* ```javascript 
+*   const options = [{value: 'vol', label: 'Volvo'}, {value: 'mer', label: 'Mercedes'}]; 
+*   //'value' is the attribute to bind to using 'value' attribute of the input. 'label' is the
+*   //displayed value.
+* ```
+* @param {String} [title] - The text required for some elements such as buttons or checkboxes.
+* @param {Boolean} [round] - For checkboxes, specifies whether the checkmark box should be round.
+* @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
+* @example
+* ```javascript 
+*   const myInput = Input({type: 'list', options: [{value: 'vol', label: 'Volvo'}, {value: 'mer', 
+*                                                  label: 'Mercedes'}], flavor: 'default'})
+* ```
+* @returns {ReactElement} - The element corresponding to the Input.
+*/export const Text = ({link, highlight, code, list, flavor = readFlavor('default'), 
+    ...attributes} = {}) => structure => {
+    //This is not to split the text for translations. Better to have the whole text
+    //TODO: link provide words and url object or object array: [{Hola Mundo: 'https://dsd'}, ], if only a string the whole text is highlighted
+    //TODO: Highlight words and style: {Hola Mundo: {background: 'blue'}}
     const textStyle = {
         fontFamily: flavor?.textFont ?? 'Avenir Next, Arial, Sans-Serif',
         fontSize: flavor?.textSize ?? 16,
@@ -556,13 +662,98 @@ export const Text = ({flavor = readFlavor('default'), ...attributes} = {}) => st
         marginBottom: 0,
         marginLeft: 0,
         marginRight: 0,
-        lineHeight: 1.5
+        lineHeight: 1.5,
+        /*Sequences of whitespace will collapse into a single whitespace. 
+        Text will wrap when necessary, and on line breaks.
+        */
+        whiteSpace: 'pre-line', //Reduces the need for <br> tags
         // textFillColor: 'transparent';
     };
-    attributes['style'] = mergeStyles(textStyle, attributes['style']);
+    
 
+    //Create anchors for the 'link' property
+    if(link) {
+        const anchorStyle = {
+            '& a': {textDecoration: 'none', cursor: 'pointer'},
+            /* unvisited link */
+            '& a:link': {color: flavor?.primaryColor ?? 'blue'},
+            /* visited link */
+            '& a:visited': {color: flavor?.primaryColor ?? 'blue'},
+            /* mouse over link */
+            '& a:hover': {textDecoration: 'underline'},
+            /* selected link */
+            '& a:active': {color: flavor?.primaryColor ?? 'blue'},
+        }
+        attributes['style'] = mergeStyles(textStyle, anchorStyle, attributes['style']);
+        //The full text is wrapped in an anchor
+        if(typeof link === 'string') structure = `<a href="${url}">${structure}</a>`;
+        //The selected text is wrapped in an anchor
+        else if(Array.isArray(link)) {
+            link.forEach(item => {
+                let anchorAttributes = '';
+                const text = item.text;
+                const url = item.url;                
+                delete item.text;
+                delete item.url;
+                //Sets anchor attributes
+                if(Object.keys(item).length > 0) {
+                    anchorAttributes = (Object.entries(item).map(([attribute, value]) => {
+                        return `${attribute}="${value}"`;
+                    })).join(' ');
+                }
+                structure = structure.replaceAll(text, 
+                    `<a href="${url}" ${anchorAttributes}>${text}</a>`);
+            });
+        }
+    }
+    //Texts to be styled as code
+    if(Array.isArray(code)) {
+        const codeStyle = {
+            '& code': {    
+                background: flavor?.lightColor ?? '#ccc',
+                paddingLeft: 5,
+                paddingRight: 5          
+            },
+        }
+        attributes['style'] = mergeStyles(textStyle, codeStyle, attributes['style']);
+        code.forEach(item => {
+            structure = structure.replaceAll(item, 
+                `<code>${item}</code>`);
+        });      
+    }
+    //Texts to be highlighted
+    if(Array.isArray(highlight)) {
+        let spanStyle = {};        
+        highlight.forEach((item, index) => {
+            const id = `_span${index}`;
+            spanStyle['& span#' + id] = item.style;
+            structure = structure.replaceAll(item.text, 
+                `<span id="${id}">${item.text}</span>`);
+        });      
+        attributes['style'] = mergeStyles(textStyle, spanStyle, attributes['style']);
+    }
+    //Return Structure: Partial texts wrapped by other elements
+    if(link || Array.isArray(code) || Array.isArray(highlight)) {
+        return HtmlP({
+            dangerouslySetInnerHTML: {__html: structure}, ...attributes
+        })();
+    }
+
+    attributes['style'] = mergeStyles(textStyle, attributes['style']);
+    //Return structure: Item lists
+    if(list) {
+        structure = structure.split('\n');
+        if(list === 'bullets') return HtmlUl(attributes)(structure.map(item=>HtmlLi()(item)));
+        if(list === 'numbers') return HtmlOl(attributes)(structure.map(item=>HtmlLi()(item)));
+    }
+
+    //Return Structure: Sandard case
     return HtmlP(attributes)(structure);
 };
+
+export const readText = textId => {
+    return Text(readTextAttributes)(readTextString(textId));
+}
 
 /** 
 * @description Complete array of input types.
@@ -584,6 +775,8 @@ const inputTypes = ['button', 'checkbox', 'color', 'date', 'datetime-local', 'em
 *   //'value' is the attribute to bind to using 'value' attribute of the input. 'label' is the
 *   //displayed value.
 * ```
+* @param {String} [title] - The text required for some elements such as buttons or checkboxes.
+* @param {Boolean} [round] - For checkboxes, specifies whether the checkmark box should be round.
 * @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
 * @example
 * ```javascript 
@@ -592,8 +785,8 @@ const inputTypes = ['button', 'checkbox', 'color', 'date', 'datetime-local', 'em
 * ```
 * @returns {ReactElement} - The element corresponding to the Input.
 */
-export const Input = ({type, options, title, titleStyle, icon, iconStyle, content,
-    flavor = readFlavor('default'), ...attributes} = {}) => {
+export const Input = ({type, options, title, titleStyle, icon, iconStyle, content, round,
+    flavor = readFlavor('default'), ...attributes} = {}) => {  
     //Standard input style
     const inputStyle = {
         color: flavor?.textColor ?? '#666',
@@ -715,9 +908,9 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         return HtmlInput({...attributes, type: type, inlineStyle: inlineStyle}); //This overrides 
         //any style defined by the user
     }
-    //Checkbox/Switch input
-    else if(type === 'checkbox' || type === 'switch') {
-        const checkboxInputStyle = {
+    //Switch input
+    else if(type === 'switch') {
+        const switchInputStyle = {
             position: 'relative',
             appearance: 'none',
             outline: 'none',
@@ -755,8 +948,83 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
                 borderColor: flavor?.primaryColor ?? 'blue',
             },
         };
-        attributes['style'] = mergeStyles(checkboxInputStyle, attributes['style']);
+        attributes['style'] = mergeStyles(switchInputStyle, attributes['style']);
         return HtmlInput({...attributes, type: type});
+    }
+    //Checkbox input: When a match attribute is provided acts as a radio input
+    //TODO: View type form. checkbox match to create radio. Icon
+    else if(type === 'checkbox') {
+        attributes['checked'] = attributes['match'] ? 
+            (attributes['value'] === attributes['match']) : attributes['value']; 
+        delete attributes['value']; 
+        let outerStyle = {
+            cursor: attributes['disabled'] ? 'not-allowed' : 'pointer',
+            minHeight: 45,
+            minWidth: 200,
+            paddingLeft: 15,
+            paddingRight: 15,
+            boxSizing: 'border-box',
+            borderRadius: flavor?.radius ?? 0,
+            borderWidth: 0,
+            borderStyle: 'solid',
+            borderColor: 'transparent',
+            transitionDuration: '0.4s',
+            '&:hover': {
+                background: flavor?.lightColor ?? '#ccc', 
+            },
+            '& input' : {
+                appearance: 'none',
+                margin: 0,
+                padding: 0        
+            },
+            '&:has(> input:focus)' : {
+                borderWidth: 1,
+                borderColor: flavor?.primaryColor ?? 'blue'          
+            }
+        };
+        const checkmarkStyle = {
+            width: 25,
+            height: 25,
+            transitionDuration: '0.4s',
+            background: attributes['checked'] ?
+                (attributes['disabled'] ?
+                    (flavor?.neutralColor ?? '#ccc') : (flavor?.primaryColor ?? 'blue')) :
+                (flavor?.backgroundColor ?? 'white'),
+            borderStyle: 'solid',
+            borderWidth: flavor?.borderWidth ?? 1,
+            borderColor: attributes['checked'] ?
+                (attributes['disabled'] ?
+                    (flavor?.neutralColor ?? '#ccc') : (flavor?.primaryColor ?? 'blue')) :
+                (flavor?.borderColor ?? '#ccc'),
+            borderRadius: round ? '100%' : (flavor?.radius ?? 0)
+        };
+        const textStyle = {
+            color: attributes['disabled'] ? 
+                (flavor?.neutralColor ?? '#ccc') : (flavor?.textColor ?? '#666')
+        };
+        outerStyle = mergeStyles(outerStyle, attributes['style']); delete attributes['style'];
+        const onChange = attributes['onChange']; delete attributes['onChange'];
+        
+        const checkmarkIcon = `<svg id="checkmark" xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 512 512"><path d="M362.6 192.9L345 174.8c-.7-.8-1.8-1.2-2.8-1.2-1.1
+             0-2.1.4-2.8 1.2l-122 122.9-44.4-44.4c-.8-.8-1.8-1.2-2.8-1.2-1 0-2 .4-2.8 1.2l-17.8 
+             17.8c-1.6 1.6-1.6 4.1 0 5.7l56 56c3.6 3.6 8 5.7 11.7 5.7 5.3 0 9.9-3.9 
+             11.6-5.5h.1l133.7-134.4c1.4-1.7 1.4-4.2-.1-5.7z"/></svg>`;
+        return View({
+            content: {h: 'left', v: 'center', gap: 5}, style: outerStyle,
+            onPress: () => {
+                if(attributes['disabled']) return; 
+                onChange(attributes['match'] ? attributes['match'] : !attributes['checked']);
+            }
+        })([
+            View({
+                flavor: flavor, content: {h: 'center', v: 'center'}, style: checkmarkStyle
+            })(attributes['checked'] && Icon({
+                icon: icon ?? checkmarkIcon, size: 20, style: {fill: 'white'}
+            })),
+            HtmlInput({...attributes, type: type}),
+            Text({flavor: flavor, style: textStyle})(title)
+        ]);
     }
     //Button inputs
     else if(type === 'button' || type === 'submit' || type === 'reset') {
@@ -863,7 +1131,7 @@ export const Icon = Component('Icon', false, ({icon, raised, size = 32,
     //Webkit bug: When another icon with the same gradient id is not displayed in the screen, it can
     //cause the current icon to be unable to display the svg gradient
     const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
-    return View({dangerouslySetInnerHTML: {__html: iconWithGradient}, ...attributes})();
+    return View({content: {h: 'center', v: 'center', wrap: false, shrink: 0}, dangerouslySetInnerHTML: {__html: iconWithGradient}, ...attributes})();
 });
 
 /** 
@@ -1025,7 +1293,7 @@ export const Slider = Component('Slider', true, ({value = 0, onChange = () => {}
         let id = attributes['id'] || ''; //Required id property in case there are multiple 
         //Slider-s, 
         //to have a unique hash location 
-        let visibleEvent = (myValue) => (component) => { //Determines if an component is visible on 
+        let visibleEvent = (index) => (component) => { //Determines if an component is visible on 
             //the screen, and based on that updates the 'value' property
             if(!component) return;
             let options = { //root: by default is the screen, rootMargin: by default is 0          
@@ -1034,7 +1302,7 @@ export const Slider = Component('Slider', true, ({value = 0, onChange = () => {}
             let callback = (entries, observer) => {
                 entries.forEach(entry => {
                     if(entry.isIntersecting && entry.intersectionRatio >= 0.4) {
-                        onChange(myValue);
+                        onChange(index);
                     }
                 });
             };
