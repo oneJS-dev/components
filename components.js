@@ -1,5 +1,6 @@
 import {
-    Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles
+    Component, BaseComponent, readFlavor, readIconGradient, positionContent, mergeStyles, 
+    readTextData
 } from '@onejs-dev/core';
 
 //==================================================================================================
@@ -482,9 +483,11 @@ export const View = ({type, visible = true, onVisibleChange = () => {}, active =
         //style required for positioning the content
         const externalDisplay = mergeStyles(attributes['style'],
             attributes['inlineStyle'])?.display ?? 'flex';
-        if(externalDisplay === 'flex') { //Only for 'flex' display property
+        //Only for 'flex' display or display 'none' when content has been set. (This is to make it
+        //work with media queries)
+        if(externalDisplay === 'flex' || (externalDisplay === 'none' && content)) {
             const positionInlineStyle = {
-                display: visible ? 'flex' : 'none',
+                display: visible ? externalDisplay : 'none',
                 flexGrow: self?.expand ?? 0,
                 flexShrink: self?.shrink ?? 1,
                 alignSelf: self?.align ?? 'auto',
@@ -645,7 +648,8 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
 *                                                  label: 'Mercedes'}], flavor: 'default'})
 * ```
 * @returns {ReactElement} - The element corresponding to the Input.
-*/export const Text = ({link, highlight, code, list, flavor = readFlavor('default'), 
+*/
+export const Text = ({type, link, emphasis, code, list, flavor = readFlavor('default'), 
     ...attributes} = {}) => structure => {
     //This is not to split the text for translations. Better to have the whole text
     //TODO: link provide words and url object or object array: [{Hola Mundo: 'https://dsd'}, ], if only a string the whole text is highlighted
@@ -654,7 +658,7 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
         fontFamily: flavor?.textFont ?? 'Avenir Next, Arial, Sans-Serif',
         fontSize: flavor?.textSize ?? 16,
         color: flavor?.textGradient ? 'transparent' : flavor?.textColor,
-        fontWeight: flavor?.fontWeight ?? 'normal',
+        fontWeight: flavor?.textWeight ?? 'normal',
         //Code below could be used to enable gradient text
         background: flavor?.textGradient ?? 'none',
         backgroundClip: flavor?.textGradient ? 'text' : undefined,
@@ -669,6 +673,7 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
         whiteSpace: 'pre-line', //Reduces the need for <br> tags
         // textFillColor: 'transparent';
     };
+    attributes['style'] = mergeStyles(textStyle, attributes['style']);
     
 
     //Create anchors for the 'link' property
@@ -684,20 +689,21 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
             /* selected link */
             '& a:active': {color: flavor?.primaryColor ?? 'blue'},
         }
-        attributes['style'] = mergeStyles(textStyle, anchorStyle, attributes['style']);
+        attributes['style'] = mergeStyles(anchorStyle, attributes['style']);
         //The full text is wrapped in an anchor
-        if(typeof link === 'string') structure = `<a href="${url}">${structure}</a>`;
+        if(typeof link === 'string') structure = `<a href="${link}">${structure}</a>`;
         //The selected text is wrapped in an anchor
         else if(Array.isArray(link)) {
             link.forEach(item => {
                 let anchorAttributes = '';
+                let itemAttributes = {...item};
                 const text = item.text;
                 const url = item.url;                
-                delete item.text;
-                delete item.url;
+                delete itemAttributes.text;
+                delete itemAttributes.url;
                 //Sets anchor attributes
-                if(Object.keys(item).length > 0) {
-                    anchorAttributes = (Object.entries(item).map(([attribute, value]) => {
+                if(Object.keys(itemAttributes).length > 0) {
+                    anchorAttributes = (Object.entries(itemAttributes).map(([attribute, value]) => {
                         return `${attribute}="${value}"`;
                     })).join(' ');
                 }
@@ -715,44 +721,60 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
                 paddingRight: 5          
             },
         }
-        attributes['style'] = mergeStyles(textStyle, codeStyle, attributes['style']);
+        attributes['style'] = mergeStyles(codeStyle, attributes['style']);
         code.forEach(item => {
             structure = structure.replaceAll(item, 
                 `<code>${item}</code>`);
         });      
     }
     //Texts to be highlighted
-    if(Array.isArray(highlight)) {
+    if(Array.isArray(emphasis)) {
         let spanStyle = {};        
-        highlight.forEach((item, index) => {
+        emphasis.forEach((item, index) => {
             const id = `_span${index}`;
             spanStyle['& span#' + id] = item.style;
             structure = structure.replaceAll(item.text, 
                 `<span id="${id}">${item.text}</span>`);
         });      
-        attributes['style'] = mergeStyles(textStyle, spanStyle, attributes['style']);
+        attributes['style'] = mergeStyles(spanStyle, attributes['style']);
+    }
+
+    //Return structure: Item lists
+    if(list) {
+        structure = structure.split('\n').filter(Boolean);        
+        structure = structure.map(item=>`<li>${item}</li>`).join('');
+        if(list === 'bullets') {
+            return HtmlUl({
+                dangerouslySetInnerHTML: {__html: structure}, ...attributes
+            })();
+        }
+        if(list === 'numbers') {
+            return HtmlOl({
+                dangerouslySetInnerHTML: {__html: structure}, ...attributes
+            })();
+        };
     }
     //Return Structure: Partial texts wrapped by other elements
-    if(link || Array.isArray(code) || Array.isArray(highlight)) {
+    if(link || Array.isArray(code) || Array.isArray(emphasis)) {
         return HtmlP({
             dangerouslySetInnerHTML: {__html: structure}, ...attributes
         })();
     }
 
-    attributes['style'] = mergeStyles(textStyle, attributes['style']);
-    //Return structure: Item lists
-    if(list) {
-        structure = structure.split('\n');
-        if(list === 'bullets') return HtmlUl(attributes)(structure.map(item=>HtmlLi()(item)));
-        if(list === 'numbers') return HtmlOl(attributes)(structure.map(item=>HtmlLi()(item)));
-    }
-
-    //Return Structure: Sandard case
+    //Return Structure: Standard case
+    if(type === 'title') return HtmlH1(attributes)(structure);
+    if(type === 'header') return HtmlH2(attributes)(structure);
+    if(type === 'section') return HtmlH3(attributes)(structure);
+    if(type === 'subsection') return HtmlH4(attributes)(structure);
     return HtmlP(attributes)(structure);
 };
 
-export const readText = textId => {
-    return Text(readTextAttributes)(readTextString(textId));
+export const readText = textId => ({...attributes}={}) => {
+    const textData = readTextData(textId);
+    if(!textData) return;
+    const textString = textData.text;
+    delete textData.text;
+    return Text({...textData, ...attributes})(textString);
 }
 
 /** 
@@ -1103,12 +1125,14 @@ your own SVG icons. If you choose to use your own icons, there are two options:
 export const Icon = Component('Icon', false, ({icon, raised, size = 32,
     flavor = readFlavor('default'), ...attributes} = {}) => {
     if(!icon) return null;
-    size = flavor?.iconSize ?? size === 'large' ? 64 : size === 'small' ? 16 : size;
+    // size = flavor?.iconSize ?? size === 'large' ? 64 : size === 'small' ? 16 : size;
+    if(typeof size === 'number') size = {width: size, height: size};
+    else size = {width: size?.width ?? 'auto', height: size?.height ?? 'auto'};
     const padding = Math.floor(parseInt(size) / 4);
     const gradient = flavor?.primaryGradient ? readIconGradient(flavor?.primaryGradient) : null;
     let iconStyle = {
-        width: size,
-        height: size,
+        width: size.width,
+        height: size.height,
         fill: gradient ? 'url(#' + gradient.id + ')' : flavor?.primaryColor ?? 'blue',
         background: 'none',
         transitionDuration: 0.4,
@@ -1156,6 +1180,11 @@ export const Icon = Component('Icon', false, ({icon, raised, size = 32,
 * @returns {ReactElement} - The element corresponding to the Modal.
 */
 //Todo remove section font and fix size, better way to control it
+const modalCloseIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,
+208-93.31,208-208S370.69,48,256,48Zm75.31,260.69a16,16,0,1,1-22.62,22.62L256,278.63l-52.69,52.68a16,
+16,0,0,1-22.62-22.62L233.37,256l-52.68-52.69a16,16,0,0,1,22.62-22.62L256,233.37l52.69-52.68a16,16,0,
+0,1,22.62,22.62L278.63,256Z"/></svg>`;
 export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), header, footer,
     backdrop = true, closeIcon = true, size = 'medium', onClose = () => {},
     ...attributes} = {}) => (structure) => {
@@ -1168,7 +1197,7 @@ export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), 
             position: 'fixed',
             top: '50%',
             left: '50%',
-            transform: 'translate(-50%, -50%)',
+            transform: 'translate(-50%, -50%)', 
             width: '95vw',
             height: '95vh',
             maxWidth: size === 'large' ? 1000 : size === 'small' ? 300 : size?.width ?? 500,
@@ -1215,7 +1244,7 @@ export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), 
                 style: contentStyle
             })([
                 closeIcon && Icon({
-                    style: closeButtonStyle, icon: 'iosCloseCircleOutline',
+                    style: closeButtonStyle, icon: modalCloseIcon,
                     onClick: (e) => {e.target.value = false; onClose(e);}
                 }),
                 header && View({style: headerStyle, content: {h: 'center', v: 'center'}})(header),
