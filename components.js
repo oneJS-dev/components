@@ -649,6 +649,10 @@ export const Button = ({flavor = readFlavor('default'), ...attributes} = {}) => 
 * ```
 * @returns {ReactElement} - The element corresponding to the Input.
 */
+const replaceNth = (s, f, r, n) => {
+    // From the given string s, find f, replace as r only on n’th occurrence
+    return s.replace(RegExp("^(?:.*?" + f + "){" + n + "}"), x => x.replace(RegExp(f + "$"), r));
+};
 export const Text = ({type, link, emphasis, code, list, flavor = readFlavor('default'), 
     ...attributes} = {}) => structure => {
     //This is not to split the text for translations. Better to have the whole text
@@ -696,11 +700,7 @@ export const Text = ({type, link, emphasis, code, list, flavor = readFlavor('def
         else if(Array.isArray(link)) {
             link.forEach(item => {
                 let anchorAttributes = '';
-                let itemAttributes = {...item};
-                const text = item.text;
-                const url = item.url;                
-                delete itemAttributes.text;
-                delete itemAttributes.url;
+                const {text, url, ...itemAttributes} = item;               
                 //Sets anchor attributes
                 if(Object.keys(itemAttributes).length > 0) {
                     anchorAttributes = (Object.entries(itemAttributes).map(([attribute, value]) => {
@@ -772,9 +772,8 @@ export const Text = ({type, link, emphasis, code, list, flavor = readFlavor('def
 export const readText = textId => ({...attributes}={}) => {
     const textData = readTextData(textId);
     if(!textData) return;
-    const textString = textData.text;
-    delete textData.text;
-    return Text({...textData, ...attributes})(textString);
+    const {text, ...properties} = textData;
+    return Text({...properties, ...attributes})(text);
 }
 
 /** 
