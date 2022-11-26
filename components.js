@@ -863,8 +863,8 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         //                  {value: 'mer', label: 'Mercedes'}]; //Standard definition       
         if(Array.isArray(options)) {
             return HtmlSelect(attributes)(options.map(item => HtmlOption({
-                value: typeof item === 'string' ? item : item.value
-            })(typeof item === 'string' ? item : item.label)));
+                value: item?.value != null ? item.value : item,// typeof item === 'string' ? item : item.value
+            })(item?.label != null ? item.label : item.toString())));//typeof item === 'string' ? item : item.label
         }
         //options (object): {cars: {volvo: 'Volvo', mercedes: 'Mercedes'}, 
         //watches: {rolex: 'Rolex', cartier: 'Cartier'}}; //Only allows 1 level of indentation
