@@ -926,6 +926,10 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
                 (flavor?.neutralColor ?? 'grey') + ' ' + value + '%, ' +
                 (flavor?.neutralColor ?? 'grey') + ' 100%)',
         };
+        //By default onChange returns a string value. Transform the value into a number
+        if(attributes['onChange']) {
+            attributes['onChange'] = (e) => {attributes['onChange'](Number(e.target.value))};
+        }
         return HtmlInput({...attributes, type: type, inlineStyle: inlineStyle}); //This overrides 
         //any style defined by the user
     }
@@ -941,7 +945,6 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             borderWidth: 1,
             borderStyle: 'solid',
             borderColor: flavor?.neutralColor ?? '#D9DADC',             //Border color
-            border: '1px solid ',
             borderRadius: '50px',
             boxShadow: 'inset -20px 0 0 0 #fff',                        //Track color: false
             transitionDuration: '0.4s',
@@ -970,7 +973,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             },
         };
         attributes['style'] = mergeStyles(switchInputStyle, attributes['style']);
-        return HtmlInput({...attributes, type: type});
+        return HtmlInput({...attributes, type: 'checkbox'});
     }
     //Checkbox input: When a match attribute is provided acts as a radio input
     //TODO: View type form. checkbox match to create radio. Icon
