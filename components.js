@@ -490,7 +490,9 @@ export const View = ({type, visible = true, onVisibleChange = () => {}, active =
                 display: visible ? externalDisplay : 'none',
                 flexGrow: self?.expand ?? 0,
                 flexShrink: self?.shrink ?? 1,
-                alignSelf: self?.align ?? 'auto',
+                alignSelf: (self?.align === 'left' || self?.align === 'top') ? 'flex-start' : 
+                    (self?.align === 'right' || self?.align === 'bottom') ? 'flex-end' : 
+                    self?.align ? self.align : 'auto',
                 ...positionContent(content)
             };
             if(animation?.['visible']) positionInlineStyle.display = 'none'; //Avoids initial 
@@ -928,7 +930,11 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         };
         //By default onChange returns a string value. Transform the value into a number
         if(attributes['onChange']) {
-            attributes['onChange'] = (e) => {attributes['onChange'](Number(e.target.value))};
+            const wrappedOnChange = attributes['onChange'];
+            attributes['onChange'] = (e) => {
+                const value = e?.target?.value != undefined ? Number(e.target.value) : undefined;
+                wrappedOnChange(value);
+            }
         }
         return HtmlInput({...attributes, type: type, inlineStyle: inlineStyle}); //This overrides 
         //any style defined by the user
@@ -972,6 +978,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
                 borderColor: flavor?.primaryColor ?? 'blue',
             },
         };
+        if(attributes['value']) attributes['checked'] = attributes['value'];
         attributes['style'] = mergeStyles(switchInputStyle, attributes['style']);
         return HtmlInput({...attributes, type: 'checkbox'});
     }
