@@ -348,11 +348,16 @@ const animate = (animation, property) => (newValue, component) => {
     }
     //Example: const map = new Map(); map.set(true, 'fade-in'); map.set(false, 'fade-out'); 
     //animation: {visible: map}
+    // else if(animation && typeof animation === 'object') {
+    //     try {selectedAnimation = animation instanceof Map ? animation[newValue] : undefined;}
+    //     catch(error) {console.error('animate: No animation set for ' + newValue); return;}
+    // }
+    // else {console.error('animate: animation should be an Array or Map: ' + animation); return;}
     else if(animation && typeof animation === 'object') {
-        try {selectedAnimation = animation instanceof Map ? animation[newValue] : undefined;}
+        try {selectedAnimation = animation[newValue];}
         catch(error) {console.error('animate: No animation set for ' + newValue); return;}
     }
-    else {console.error('animate: animation should be an Array or Map: ' + animation); return;}
+    else {console.error('animate: animation should be an Array or Object: ' + animation); return;}
 
     //Animations should go inside the ONEJS object
     if(typeof selectedAnimation === 'string') { //If it is a string, retrieve template animation
