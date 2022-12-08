@@ -1169,7 +1169,10 @@ export const Icon = Component('Icon', false, ({icon, raised, size = 32,
     //Webkit bug: When another icon with the same gradient id is not displayed in the screen, it can
     //cause the current icon to be unable to display the svg gradient
     const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
-    return View({content: {h: 'center', v: 'center', wrap: false, shrink: 0}, dangerouslySetInnerHTML: {__html: iconWithGradient}, ...attributes})();
+    return View({
+        content: {h: 'center', v: 'center', wrap: false, shrink: 0}, 
+        dangerouslySetInnerHTML: {__html: iconWithGradient}, ...attributes
+    })();
 });
 
 /** 
