@@ -220,7 +220,7 @@ const animations = {
         keyframes: {
             opacity: [1, 0], translate: ['none', '0 -30%'], filter: ['blur(0)', 'blur(5px)']
         },
-        options: {duration: 500, easing: 'ease-in-out'}
+        options: {duration: 500, easing: 'ease-in-out'}, style: {display: 'none'}
     },
     'fade-in': {
         keyframes: {opacity: [0, 1], 'webkit-transform': 'none'},
