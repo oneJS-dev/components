@@ -1039,7 +1039,7 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
                 (flavor?.neutralColor ?? '#ccc') : (flavor?.textColor ?? '#666')
         };
         outerStyle = mergeStyles(outerStyle, attributes['style']); delete attributes['style'];
-        const onChange = null;
+        let onChange = null;
         if(attributes['onChange']){
             onChange = attributes['onChange'];
             delete attributes['onChange'];
