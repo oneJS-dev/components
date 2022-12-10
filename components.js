@@ -1039,7 +1039,11 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
                 (flavor?.neutralColor ?? '#ccc') : (flavor?.textColor ?? '#666')
         };
         outerStyle = mergeStyles(outerStyle, attributes['style']); delete attributes['style'];
-        const onChange = attributes['onChange']; delete attributes['onChange'];
+        const onChange = null;
+        if(attributes['onChange']){
+            onChange = attributes['onChange'];
+            delete attributes['onChange'];
+        }
         
         const checkmarkIcon = `<svg id="checkmark" xmlns="http://www.w3.org/2000/svg" 
             viewBox="0 0 512 512"><path d="M362.6 192.9L345 174.8c-.7-.8-1.8-1.2-2.8-1.2-1.1
@@ -1050,7 +1054,8 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
             content: {h: 'left', v: 'center', gap: 5}, style: outerStyle,
             onPress: () => {
                 if(attributes['disabled']) return; 
-                onChange(attributes['match'] ? attributes['match'] : !attributes['checked']);
+                if(onChange) onChange(attributes['match'] ? 
+                    attributes['match'] : !attributes['checked']);
             }
         })([
             View({
