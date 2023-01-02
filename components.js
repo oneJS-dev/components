@@ -1630,3 +1630,114 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
             ])),
         ]);
     });
+
+export const Table = Component('Table', true, ({columns=3, template, flavor=readFlavor('default'), 
+...attributes}) => structure => {
+    //TODO: Add filtering and ordering options such as in Excel
+    let tableStyle = {
+        display: 'grid',
+        gridTemplateColumns: template ?? '1fr '.repeat(columns),
+        border: '1px solid #e9e8ee',
+        overflow: 'auto',
+        '& > *': {
+            borderTop: '1px solid #e9e8ee',
+            borderLeft: '1px solid #e9e8ee',
+            padding: 10,
+        }       
+    };
+    //First Row
+    tableStyle[`& >:nth-child(-n+${columns})`] =  {
+        borderTop: 'none',
+        fontWeight: 'bold',
+        backgroundColor: '#f1f1f1'
+    },
+    //First Column
+    tableStyle[`& >:nth-child(${columns}n+1)`] = {
+        borderLeft: 'none'
+    }
+    attributes['style'] = mergeStyles(tableStyle, attributes['style']);
+
+    return View({flavor: flavor, ...attributes})(structure);
+});
+
+const AutocompleteInput = ({onChange, value, options, onOptionsChange, flavor=readFlavor('default'), 
+    ...attributes}={}) => {
+    //Todo: Implement match type: exact, startsWith, etc.
+    const readOption = option => {
+        if(!option) return '';
+        if(typeof option === 'string') return option; //String
+        if(option?.id) return option.id; //Objects
+        return '';
+    }
+    let filteredOptions = [];
+    
+    if(value && options?.length) {
+        filteredOptions = options.filter(option => readOption(option).search(value) > -1);
+    }
+
+    const onChangeWrapper = (e) => {
+        if(onChange) onChange(e);
+        if(!options || !onOptionsChange) return;
+        const value = e.target.value;
+        if(!value) return;
+        const filteredOptions = options.filter(option => readOption(option).search(value) > -1);
+        onOptionsChange(filteredOptions);        
+    }
+    const mainStyle = {
+        width: 'fit-content',
+        transitionDuration: '0.4s',
+        'input:not(:focus) + div:not(:hover)': {
+            // opacity: 0,
+            display: 'none !important'
+        }, 
+        // 'input:focus + div': {
+        //     // opacity: 1,
+        //     display: 'flex'
+        // }, 
+    };
+    const dropdownContainerStyle = {
+        position: 'relative', width: '100%', transitionDuration: '0.4s',
+    };
+    const dropdownStyle = {
+        position: 'absolute',
+        backgroundColor: 'rgba(255,255,255,0.8)',
+        backdropFilter: 'blur(10px)',
+        zIndex: 10,
+        overflow: 'auto',
+        boxSizing: 'border-box',
+        cursor: 'pointer',
+        transitionDuration: '0.4s',
+        width: '100%',
+        maxHeight: 'min(400px, 80vh)',
+        '& *:not(:first-child)': {
+            borderTopWidth: flavor?.borderWidth ?? 1,
+            borderTopStyle: flavor?.borderStyle ?? 'solid',
+            borderTopColor: flavor?.borderColor ?? '#ccc'
+        },
+        '&:not(:focus)': {
+            display: 'flex'
+        },
+        //try using before and after
+    };
+    const textStyle = {
+        lineHeight: 2.5,
+        paddingInline: 20,
+        '&:hover': {
+            background: flavor?.lightColor ?? '#ccc'
+        }
+    };
+
+    return View({content: {direction: 'column'}, style: mainStyle})([
+        Input({type: 'text', onChange: onChangeWrapper, value: value, ...attributes}),
+        filteredOptions.length > 0 && View({style: dropdownContainerStyle})(
+            View({content: {direction: 'column', h: 'stretch'}, flavor: flavor, style: dropdownStyle})(
+                filteredOptions.map(option => Text({
+                    style: textStyle, key: readOption(option), onClick: () => {
+                        const e = {target: {value: readOption(option)}};
+                        onChangeWrapper(e);
+                    }
+                })(readOption(option)))
+            )
+        )        
+    ]);
+}
