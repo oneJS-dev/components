@@ -22,7 +22,7 @@
   </a>
   <!-- Npm Version -->
   <a href="https://www.npmjs.org/package/@onejs-dev/components">
-    <img src="https://img.shields.io/npm/v/@onejs-dev/core?color=brightgreen&label=npm%20package" alt="Current npm package version." />
+    <img src="https://img.shields.io/npm/v/@onejs-dev/components?color=brightgreen&label=npm%20package" alt="Current npm package version." />
   </a>
   <!-- PRs -->
   <a href="https://reactnative.dev/docs/contributing">
@@ -34,8 +34,8 @@ A **functional**, **JavaScript only**, **cross platform** framework.
 <br><br>
 oneJS is a next generation, open source JavaScript framework for building modern apps for web and mobile from a single codebase. oneJS is not owned by any Tech Giant; it is an independent project developed by contributors from all around the world. oneJS is based on three principles:
 
-- **Functional:** Predictable, code efficient and easily testable. Pure functions are the building blocks of oneJS. Fall in love with the the functional programming paradigm ❤️.
-- **JS Only. Really:** You can write your entire app in pure Vanilla JS or Typescript. That's write, not a single line of HTML, CSS or JSX needed. Can you believe it?
+- **Functional:** Predictable, code efficient and easily testable. Pure functions are the building blocks of oneJS. Fall in love with the functional programming paradigm ❤️.
+- **JS Only. Really:** You can write your entire app in pure Vanilla JS or Typescript. That's right, not a single line of HTML, CSS or JSX needed. Can you believe it?
 - **Cross Platform:** Write the same code for web and native apps. Simplicity is our true cross platform weapon; reduce your effort and multiply your reach! Powered by [React][react] and [React Native's][rn] new architecture.
 
 [react]: https://reactjs.org/
@@ -43,9 +43,7 @@ oneJS is a next generation, open source JavaScript framework for building modern
 
 ## 🗂️ Repository: components
 
-A component is a function that receives properties and returns a structure that can be rendered on the screen. This repository contains all the components offered out of the box by oneJS and functions to create your own. Head to the [docs][docs] section to discover all the [components][comopnents] you can import.
-
-[components]: https://onejs.dev/docs
+A component is a function that receives properties and returns a structure that can be rendered on the screen. This repository contains all the components offered out of the box by oneJS and functions to create your own. Head to the [docs][docs] section to discover all the **comopnents** you can import.
 
 ## 🚀 Get Started
 
@@ -104,7 +102,8 @@ You do not require extensive JavaScript knowledge to become an expert in oneJS; 
 oneJS is MIT licensed.
 
 <div align="center">
-  <H1><H1>
-  
-  <img alt="oneJS" src="https://user-images.githubusercontent.com/98762998/210245537-180314c5-51b1-4b01-b3b8-d02d50b77d73.svg" width="60px">
+  <h1></h1>
+  <h1>
+    <img alt="oneJS" src="https://user-images.githubusercontent.com/98762998/210245537-180314c5-51b1-4b01-b3b8-d02d50b77d73.svg" width="60px">
+  </h1>
 </div>
