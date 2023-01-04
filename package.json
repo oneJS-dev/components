@@ -24,7 +24,7 @@
     "@react-native-masked-view/masked-view": "^0.2.7",
     "@react-native-picker/picker": "^2.4.4",
     "react-native-modal-selector": "^2.1.1",
-    "react-native-svg": "^13.6.0",
+    "react-native-svg": "^13.4.0",
     "@emotion/css": "^11.10.0"
   }
 }
