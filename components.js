@@ -3,6 +3,8 @@ import {
     readTextData
 } from '@onejs-dev/core';
 
+import React from 'react';
+
 //==================================================================================================
 // STANDARD COMPONENTS:
 // Html standard components to be used on the web.
@@ -584,7 +586,7 @@ export const View = ({type, visible = true, onVisibleChange = () => {}, active =
 // Icon: Displays and icon from the svg gallery.
 //       Gradient icons are supported.
 // Modal: Base component to display overlaying content.
-// Slider: Creates stacked views that allow the user to slide across the component's
+// Swiper: Creates stacked views that allow the user to slide across the component's
 //         children.
 //==================================================================================================
 
@@ -1152,6 +1154,7 @@ export const Icon = Component('Icon', false, ({icon, raised, size = 32,
     let iconStyle = {
         width: size.width,
         height: size.height,
+        overflow: 'hidden', //Necessary for icons with set width and height
         fill: gradient ? 'url(#' + gradient.id + ')' : flavor?.primaryColor ?? 'blue',
         background: 'none',
         transitionDuration: 0.4,
@@ -1278,59 +1281,60 @@ export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), 
     });
 
 /** 
-* @description Stacked views that allow the user to slide across the component's children. It 
+* @description Stacked views that allow the user to swipe across the component's children. It 
 * provides customization options as well as functions to be triggered on user events.
 * Tips:
-*   - If multiple sliders are to be used, give each of them a unique id. This is required for the 
+*   - If multiple swipers are to be used, give each of them a unique id. This is required for the 
 *     hash location to be unique.
-*   - Other elements can use the href property to move the slider or the location.hash = newHash 
+*   - Other elements can use the href property to move the swiper or the location.hash = newHash 
 *     method. 
 *   - Setting the value state property does not move to the element. Rather move the element to set
 *     the state property.
 *   - Works better setting height and width.
 * @param {Number} value - The configuration assigning a value to each of the theme variables.
-* @param {Function} [onChange] - The function called when the user slides to another view. It can be
+* @param {Function} [onChange] - The function called when the user swipes to another view. It can be
 * used to change the value of state variables.
-* @param {Boolean} [bullets] - If true, displays a bullet per view on top of the slider. 
-* @param {String} [direction] - The direction in which views can be slided. The possible values 
+* @param {Boolean} [bullets] - If true, displays a bullet per view on top of the swiper. 
+* @param {String} [direction] - The direction in which views can be swiped. The possible values 
 * are: 'row' and 'column'.
 * @param {Boolean} [scroll] - If true, the user is able to scroll across the views.
 * @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
-* @param {Component} [structure] - The component structure to be rendered inside the slider.
+* @param {Component} [structure] - The component structure to be rendered inside the swiper.
 * @example
 * ```javascript 
-*   Slider({value: read('slide'), onChange: update('slide'), direction: 'column', scroll: true})([
+*   Swiper({value: read('swipe'), onChange: update('swipe'), direction: 'column', scroll: true})([
         Input(), Input(), Button()('My button')
     ]);
 * ```
-* @returns {ReactElement} - The element corresponding to the Slider.
+* @returns {ReactElement} - The element corresponding to the Swiper.
 */
-export const Slider = Component('Slider', true, ({value = 0, onChange = () => {}, bullets = true,
+export const Swiper = Component('Swiper', true, ({value = 0, onChange = () => {}, bullets = true,
     direction = 'row', scroll = true, flavor = readFlavor('default'),
-    ...attributes} = {}) => structure => {
+    ...attributes} = {}) => children => {
         let mainStyle = {
             position: 'relative', //Required for the bullets to have their absolute positioning 
             //relative to this element 
             height: '200px', //Required for the container and the content to completely fill the
-            //slide space
+            //swipe space
             a: {
                 backgroundColor: 'rgba(255, 255, 255, .85)', textDecoration: 'none', margin: 5,
                 backdropFilter: 'blur(10px)', borderRadius: '100%', height: 25, width: 25,
                 color: flavor?.textColor ?? "#333", border: 'solid 1px ' +
                     flavor?.primaryColor ?? blue, display: 'flex', justifyContent: 'center',
-                alignItems: 'center', fontWeight: flavor?.fontWeight ?? 'normal'
+                alignItems: 'center', fontWeight: flavor?.fontWeight ?? 'normal',
+                fontFamily: flavor?.textFont ?? 'Arial'
             },
             'a[active]': {
                 backgroundColor: flavor?.primaryColor ?? 'blue',
                 color: flavor?.backgroundColor ?? 'white'
             }, //Styles the active bullet
-            '.sliderContainer': {flexWrap: 'nowrap'}
+            '.swiperContainer': {flexWrap: 'nowrap'}
         };
         let containerStyle = {
             width: '100%',
             height: '100%',
             scrollSnapType: direction === 'column' ? 'y mandatory' : 'x mandatory', //Allows the 
-            //content to snap on the different slides
+            //content to snap on the different swipes
             scrollBehavior: 'smooth',
             overflowX: direction === 'column' ? 'hidden' : (scroll ? 'scroll' : 'hidden'),
             overflowY: direction === 'column' ? (scroll ? 'scroll' : 'hidden') : 'hidden',
@@ -1342,7 +1346,7 @@ export const Slider = Component('Slider', true, ({value = 0, onChange = () => {}
             height: '100%'
         };
         let id = attributes['id'] || ''; //Required id property in case there are multiple 
-        //Slider-s, 
+        //Swiper-s, 
         //to have a unique hash location 
         let visibleEvent = (index) => (component) => { //Determines if an component is visible on 
             //the screen, and based on that updates the 'value' property
@@ -1370,50 +1374,42 @@ export const Slider = Component('Slider', true, ({value = 0, onChange = () => {}
         return View({name: name, self: {expand: 1}, style: mainStyle, ...attributes})([
             View({
                 style: containerStyle, content: {direction: direction, wrap: false},
-                class: 'sliderContainer'
+                class: 'swiperContainer'
             })(
-                structure.map((view, index) => View({
+                children.map((child, index) => View({
                     onCreate: visibleEvent(index),
                     content: {direction: direction, wrap: false}, self: {shrink: 0},
-                    key: id + 'Slide' + index, id: id + 'Slide' + index, style: contentStyle
-                })(view))),
+                    key: id + 'Swipe' + index, id: id + 'Swipe' + index, style: contentStyle
+                })(child))),
             bullets && View({
                 content: {h: 'center', v: 'center'}, self: {shrink: 0}, id: 'bullets',
                 inlineStyle: {position: 'absolute', bottom: 0, width: '100%', zIndex: 3}
             })(
-                structure.map((view, index) => HtmlA({
-                    key: index, href: '#' + id + 'Slide' + index,
+                children.map((child, index) => HtmlA({
+                    key: index, href: '#' + id + 'Swipe' + index,
                     active: parseInt(index) === parseInt(value) ? 1 : undefined,
                 })(index)))
         ]);
     });
 
-/** 
-* @description Base component to display overlaying content. It provides customization options as 
-* well as functions to be triggered on user events.
-* @param {Flavor} [flavor] - The configuration assigning a value to each of the theme variables.
-* @param {Component} [header] - Component to be embedded in the modal's header.
-* @param {Component} [footer] - Component to be embedded in the modal's footer.
-* @param {Boolean} [backdrop] - If true, displays a translucent background behind the modal.
-* @param {Boolean} [closeIcon] - If true, displays a cross-shaped icon that closes the modal on 
-* click.
-* @param {String} [size] - Adjusts the size of the modal. The following options are available: 
-* 'large', 'medium' and 'small'. It is 'medium' by default.
-* @param {Function} [onClose] - The function called when the user closes the modal. It can be used
-* to change the value of state variables.
-* @param {Component} [structure] - The component structure to be rendered inside the modal.
-* @example
-* ```javascript 
-*   Modal({visible: read('openModal'), size: 'large', onclose: update('openModal'),
-*        header: 'This is my title'})(Text()('Hello World!')),
-* ```
-* @returns {ReactElement} - The element corresponding to the Modal.
-* @todo add an optional back button
-*/
-//Todo remove section font and fix size, better way to control it
+
+const closeIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path d="M289.94,256l95-95A24,24,0,0,0,351,127l-95,95-95-95A24,24,0,0,0,
+127,161l95,95-95,95A24,24,0,1,0,161,385l95-95,95,95A24,24,0,0,0,385,351Z"/></svg>`;
+const heartIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path d="M256,448a32,32,0,0,
+1-18-5.57c-78.59-53.35-112.62-89.93-131.39-112.8-40-48.75-59.15-98.8-58.61-153C48.63,114.52,98.46,
+64,159.08,64c44.08,0,74.61,24.83,92.39,45.51a6,6,0,0,0,9.06,0C278.31,
+88.81,308.84,64,352.92,64,413.54,64,463.37,114.52,464,176.64c.54,54.21-18.63,104.26-58.61,153-18.77,
+22.87-52.8,59.45-131.39,112.8A32,32,0,0,1,256,448Z"/></svg>`;
+const starIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path d="M394,480a16,16,0,0,1-9.39-3L256,383.76,127.39,477a16,16,0,0,1-24.55-18.08L153,310.35,23,
+221.2A16,16,0,0,1,32,192H192.38l48.4-148.95a16,16,0,0,1,30.44,0l48.4,149H480a16,16,0,0,1,9.05,
+29.2L359,310.35l50.13,148.53A16,16,0,0,1,394,480Z"/></svg>`;
+
 //Note that the parent component needs to have overlay hidden to work properly
 export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('default'), onSwipe,
-    icon, upIcon = true, onBack, size = 'medium', ...attributes} = {}) => (structure) => {
+    icons, upIcon = true, onBack, size = 'medium', ...attributes} = {}) => (structure) => {
         const device = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) ||
             (navigator.msMaxTouchPoints > 0)) ? 'touch' : 'mouse';
         const moveEvents = {
@@ -1577,15 +1573,15 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
         //limit to 5 cards
         return View({content: {h: 'center', v: 'center'}, ...attributes})([
             Icon({
-                icon: icon?.left ?? 'mdClose', size: 'large', flavor: leftFlavor,
+                icon: icons?.left ?? closeIcon, size: 'large', flavor: leftFlavor,
                 style: [overlayIconStyle, {opacity: potentialDirection === 'left' ? 1 : 0}]
             }),
             Icon({
-                icon: icon?.left ?? 'iosStar', size: 'large', flavor: flavor,
+                icon: icons?.left ?? starIcon, size: 'large', flavor: flavor,
                 style: [overlayIconStyle, {opacity: potentialDirection === 'up' ? 1 : 0}]
             }),
             Icon({
-                icon: icon?.left ?? 'iosHeart', size: 'large', flavor: rightFlavor,
+                icon: icons?.left ?? heartIcon, size: 'large', flavor: rightFlavor,
                 style: [overlayIconStyle, {opacity: potentialDirection === 'right' ? 1 : 0}]
             }),
             structure.map((view, index) => View({
@@ -1602,17 +1598,17 @@ export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('d
                 })(view),
                 View({content: {h: 'center', v: 'center', gap: 10}, style: buttonContainerStyle})([
                     Icon({
-                        icon: icon?.left ?? 'mdClose', raised: true,
+                        icon: icons?.left ?? closeIcon, raised: true,
                         onPress: swipe(index)('left'), flavor: leftFlavor,
                         style: [buttonStyle, {opacity: potentialDirection ? 0 : 1}]
                     }),
                     upIcon && Icon({
-                        icon: icon?.up ?? 'iosStar', raised: true,
+                        icon: icons?.up ?? starIcon, raised: true,
                         onPress: swipe(index)('up'), flavor: flavor,
                         style: [buttonStyle, {opacity: potentialDirection ? 0 : 1}]
                     }),
                     Icon({
-                        icon: icon?.right ?? 'iosHeart', raised: true,
+                        icon: icons?.right ?? heartIcon, raised: true,
                         onPress: swipe(index)('right'), flavor: rightFlavor,
                         style: [buttonStyle, {opacity: potentialDirection ? 0 : 1}]
                     }),

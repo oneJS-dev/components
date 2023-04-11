@@ -15,7 +15,7 @@ import {
     VirtualizedList as _RNVirtualizedList, DrawerLayoutAndroid as _RNDrawerLayoutAndroid,
     TouchableNativeFeedback as _RNTouchableNativeFeedback,
     InputAccessoryView as _RNInputAccessoryView, SafeAreaView as _RNSafeAreaView,
-    Platform, Animated, Easing
+    Platform, Animated, Easing, Dimensions
 } from 'react-native';
 import React from 'react';
 
@@ -29,7 +29,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 //https://github.com/react-native-datetimepicker/datetimepicker
 
 import Slider from '@react-native-community/slider';
-import ModalSelector from 'react-native-modal-selector'; 
+import ModalSelector from 'react-native-modal-selector';
 //https://github.com/peacechen/react-native-modal-selector 
 
 //There are other options for pickers:
@@ -54,7 +54,7 @@ export const RNImage = BaseComponent('Image', false, _RNImage);
 export const RNImageBackground = BaseComponent('ImageBackground', true, _RNImageBackground);
 export const RNKeyboardAvoidingView =
     BaseComponent('KeyboardAvoidingView', true, _RNKeyboardAvoidingView);
-export const RNModal = BaseComponent('Modal', true, _RNModal);
+export const RNModal = BaseComponent('RNModal', true, _RNModal);
 export const RNPressable = BaseComponent('Pressable', true, _RNPressable);
 export const RNRefreshControl = BaseComponent('RefreshControl', false, _RNRefreshControl);
 export const RNScrollView = BaseComponent('ScrollView', true, _RNScrollView);
@@ -80,13 +80,13 @@ export const RNSafeAreaView = BaseComponent('SafeAreaView', true, _RNSafeAreaVie
 export const RNAnimatedView = BaseComponent('Animated.View', true, Animated.View);
 
 //External Compoenets
-const ListPicker = BaseComponent('ModalSelector', false, ModalSelector);    
+const ListPicker = BaseComponent('ModalSelector', false, ModalSelector);
 //https://github.com/peacechen/react-native-modal-selector 
 
-const DTPicker = BaseComponent('DateTimePicker', false, DateTimePicker);    
+const DTPicker = BaseComponent('DateTimePicker', false, DateTimePicker);
 //https://github.com/react-native-datetimepicker/datetimepicker
 
-const SliderPicker = BaseComponent('Slider', false, Slider);                
+const SliderPicker = BaseComponent('Slider', false, Slider);
 //https://github.com/callstack/react-native-slider/
 
 //Gradient Components
@@ -298,7 +298,7 @@ const animate = (animation, property, animationValue, setSelectedKeyframes, isVi
         if(typeof selectedAnimation === 'string') {
             selectedAnimation = animations[selectedAnimation];
             if(!selectedAnimation) {
-                console.warn('No such animation: ' + selectedAnimation); 
+                console.warn('No such animation: ' + selectedAnimation);
                 return;
             }
         }
@@ -509,12 +509,14 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
         }
         else finalStructure = RNView({visible: visible, ...attributes})(visible ? structure : null);
 
-        if(flavor?.backgroundGradient) {
+        if(flavor?.backgroundGradient) {//In case of backgroundGradient
             finalStructure = Gradient({
                 ...flavor.backgroundGradient, style: outerStyle
             })(finalStructure);
-        }//In case of backgroundGradient
-        if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);//In case of url links
+        }
+        //url property gets substituted in core by onPress = updateUrl(url), this allows to change
+        //current url on press
+        if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);
 
         return finalStructure;
     });
@@ -902,26 +904,332 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
 export const Icon = Component('Icon', false, ({icon, size = 32, raised,
     flavor = readFlavor('default'), ...attributes} = {}) => {
     if(!icon) return null;
-    size = flavor?.iconSize ?? size === 'large' ? 64 : size === 'small' ? 16 : size;
+    //Size can be defined: size = 30 (width=height=30) or size = {width: 30, height: 60}
+    if(typeof size === 'number') size = {width: size, height: size};
+    else size = {width: size?.width ?? 'auto', height: size?.height ?? 'auto'};
     let padding = Math.floor(parseInt(size) / 4);
     const gradient = flavor?.primaryGradient ? readIconGradient(flavor?.primaryGradient) : null;
     const iconStyle = {
-        width: size,
-        height: size,
         fill: gradient ? 'url(#' + gradient.id + ')' : flavor.primaryColor ?? 'blue',
         backgroundColor: 'transparent'
     };
-    const backgroundStyle = {
-        minWidth: size + padding * 2,
-        minHeight: size + padding * 2,
-        width: size + padding * 2,
-        height: size + padding * 2
+    let backgroundStyle = { //Adding padding for the icon
+        minWidth: Math.floor(size.width * 1.5),
+        minHeight: Math.floor(size.height * 1.5),
+        width: Math.floor(size.width * 1.5),
+        height: Math.floor(size.height * 1.5)
     };
+    if(raised) {
+        backgroundStyle = {
+            ...backgroundStyle, ...{
+                background: flavor?.backgroundColor ?? 'blue',
+                borderWidth: flavor?.borderWidth ?? 0,
+                borderStyle: flavor?.borderStyle ?? 'solid',
+                borderColor: flavor?.borderColor ?? 'transparent',
+                borderRadius: flavor?.radius ?? '0px',
+                ...flavor?.shadow
+            }
+        };
+    }
     attributes['style'] = mergeStyles(backgroundStyle, attributes['style']);
 
     const iconWithGradient = gradient ? icon.replace('</svg>', (gradient.value + '</svg>')) : icon;
     return View({
         content: {h: 'center', v: 'center', wrap: false}, flavor: raised ? flavor : undefined,
         ...attributes
-    })(Xml({xml: iconWithGradient, style: iconStyle}));
+    })(Xml({xml: iconWithGradient, style: iconStyle, width: size.width, height: size.height}));
 });
+
+/**
+ * @description Creates a modal component with customizable header, footer, size, animation, and backdrop.
+ * @param {Object} flavor - The component's flavor object, which includes style and color preferences.
+ * @param {ReactNode} header - The component's header, if any.
+ * @param {ReactNode} footer - The component's footer, if any.
+ * @param {boolean} backdrop - Whether to show a backdrop behind the modal.
+ * @param {boolean} closeIcon - Whether to show a close icon in the top left corner of the modal.
+ * @param {string} size - The size of the modal ('small', 'medium', or 'large').
+ * @param {function} onClose - A function to be called when the modal is closed.
+ * @param {string} animation - The type of animation to use when showing or hiding the modal.
+ * @param {boolean} visible - Whether the modal is currently visible or not.
+ * @param {Object} attributes - Additional attributes to pass to the RNModal component.
+ * 
+ * @returns {ReactNode} A modal component.
+ */
+// animationType: The animationType prop controls how the modal animates.
+// - slide: slides in from the bottom,
+// - fade: fades into view,
+// - none; appears without an animation
+// transparent
+// The transparent prop determines whether your modal will fill the entire view. Setting this to true will render the modal over a transparent background.
+const modalCloseIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,
+208-93.31,208-208S370.69,48,256,48Zm75.31,260.69a16,16,0,1,1-22.62,22.62L256,278.63l-52.69,52.68a16,
+16,0,0,1-22.62-22.62L233.37,256l-52.68-52.69a16,16,0,0,1,22.62-22.62L256,233.37l52.69-52.68a16,16,0,
+0,1,22.62,22.62L278.63,256Z"/></svg>`;
+export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), header, footer,
+    backdrop = true, closeIcon = true, size = 'medium', onClose = () => {},
+    animation = 'slide', visible, ...attributes} = {}) => structure => {
+        animation = attributes['animationType'] || animation;
+        // Set the style for the modal's content area based on the size prop.
+        const contentStyle = {
+            position: 'absolute',
+            left: size === 'large' ? '5%' : size === 'small' ? '20%' : '10%',
+            top: size === 'large' ? '5%' : size === 'small' ? '35%' : '20%',
+            width: size === 'large' ? '90%' : size === 'small' ? '60%' : '80%',
+            height: size === 'large' ? '90%' : size === 'small' ? '30%' : '60%',
+            backgroundColor: 'white' // backgroundColor: 'rgba(255,255,255,0.95)', 
+        };
+        const closeButtonStyle = {
+            background: 'none',
+            position: 'absolute',
+            top: 4,
+            left: 4,
+        };
+        const headerStyle = {
+            paddingVertical: 16,
+            width: '100%',
+            borderBottomWidth: 1,
+            borderColor: '#eee',
+        };
+        const footerStyle = {
+            paddingVertical: 16,
+            width: '100%',
+            borderTopWidth: 1,
+            borderColor: '#eee',
+        };
+        return RNModal({
+            animationType: animation, visible: visible, transparent: true, ...attributes
+        })([
+            //Show a backdrop behind the modal if the backdrop prop is true.
+            backdrop && RNTouchableOpacity({
+                style: {backgroundColor: 'black', height: '100%', opacity: 0.5},
+                onPress: () => {onClose(false);}
+            })(),
+            View({
+                content: {h: 'center', v: 'space', direction: 'column', wrap: false},
+                style: contentStyle, flavor: {...flavor, shadow: {elevation: 20}},
+            })([
+                header && View({style: headerStyle, content: {h: 'center', v: 'center'}})(header),
+                structure,
+                footer && View({style: footerStyle, content: {h: 'distribute', v: 'center'}})(footer),
+                closeIcon && RNTouchableOpacity({
+                    style: closeButtonStyle, onPress: () => {onClose(false);}
+                })(Icon({
+                    icon: modalCloseIcon, flavor: {primaryColor: flavor?.neutralColor ?? '#999'}
+                })),
+            ]),
+        ]);
+    });
+/**
+ * Swiper component for horizontal scrolling with tabs
+ * @typedef {Object} SwiperProps
+ * @property {number} [value=0] - Index of the currently active tab.
+ * @property {function} [onChange=() => {}] - Callback function called when a tab is pressed.
+ * @property {boolean} [bullets=true] - Flag to show/hide tab bullets.
+ * @property {string} [direction='row'] - Direction of the swiper, 'row' or 'column'.
+ * @property {boolean} [scroll=true] - Flag to enable/disable scrolling.
+ * @property {string} [flavor=readFlavor('default')] - Theme flavor.
+ * @property {...*} [...attributes] - Additional attributes to be passed to the component.
+ * @returns {ReactNode} Higher-order function that accepts an array of child components.
+ */
+//TODO: Implement direction column
+export const Swiper = Component('Swiper', true, ({value = 0, onChange = () => {}, bullets = true,
+    direction = 'row', scroll = true, flavor = readFlavor('default'),
+    ...attributes} = {}) => children => {
+        //Navigates (scrolls) to tab on bullet press
+        const onBulletPress = (index) => {
+            onChange(index);
+        };
+
+        //Initializes scroll position during the onCreate function
+        const initScroll = index => domRef => {
+            //During onCreate domRef.measure(width) is equal to 0, therefore window width is used.
+            //This is a workaround and could create incosistencies if the index is not 0 on init.
+            domRef.scrollTo({x: index * Dimensions.get('window').width, y: 0, animated: true});
+        };
+
+        //Updates scroll position on property 'value' change
+        const updateScroll = (index, domRef) => {
+            domRef.measure((x, y, width, height, pageX, pageY) => {
+                domRef.scrollTo({x: index * width, y: 0, animated: true});
+            });
+        };
+
+        //Updates active tab on scroll end
+        const onScrollEnd = (event) => {
+            const offsetX = event.nativeEvent.contentOffset.x;
+            const width = event.nativeEvent.layoutMeasurement.width;
+            const page = Math.round(offsetX / width);
+            onChange(page);
+        };
+
+        const styles = {
+            tabsContainer: {
+                position: 'absolute',
+                bottom: 0,
+                width: '100%',
+                height: 50
+            },
+            bullet: {
+                fontSize: 20,
+                color: flavor?.neutralColor ?? '#333'
+            },
+            activeBullet: {
+                color: flavor?.primaryColor ?? 'blue'
+            }
+        };
+        return View({content: {direction: 'column'}, self: {expand: 1}})([
+            //ScrollView
+            RNScrollView({
+                horizontal: true, pagingEnabled: true, showsHorizontalScrollIndicator: false,
+                scrollEnabled: scroll,
+                onCreate: initScroll(value),
+                // onScroll: onScrollEnd,
+                onScrollEndDrag: onScrollEnd,
+                onMomentumScrollEnd: onScrollEnd,
+                value: value,
+                onPropertyChange: {value: updateScroll},
+                style: {flex: 1, flexDirection: 'column'},
+                contentContainerStyle: {flex: 1},
+                ...attributes
+            })([
+                React.Children.map(children, (child, index) => {
+                    return View({
+                        key: index, self: {expand: 1}, style: {width: '100%'}
+                    })(child);
+                })
+            ]),
+            //Bullets
+            bullets && View({
+                style: styles.tabsContainer, content: {h: 'center', v: 'center', gap: 10}, 
+                self: {expand: 1}
+            })([
+                React.Children.map(children, (child, index) => {
+                    return RNTouchableOpacity({
+                        style: {paddingHorizontal: 5}, onPress: () => onBulletPress(index)
+                    })(
+                        Text({style: [styles.bullet, value === index && styles.activeBullet]})('⬤')
+                    );
+                })
+            ]),
+        ]);
+    });
+
+// export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('default'), onSwipe,
+//     icons, upIcon = true, onBack, size = 'medium', ...attributes} = {}) => (structure) => {
+//         const SWIPE_THRESHOLD = 120;
+
+// const CardStack = ({ data, renderCard, onSwipeLeft=()=>{}, onSwipeRight=()=>{} }) => {
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [nextIndex, setNextIndex] = useState(1);
+//   const [position] = useState(new Animated.ValueXY());
+
+//   const panResponder = useRef(
+//     PanResponder.create({
+//       onMoveShouldSetPanResponder: (event, gesture) => Math.abs(gesture.dx) > Math.abs(gesture.dy) && Math.abs(gesture.dx) > 10,
+//       onPanResponderMove: (event, gesture) => {
+//         position.setValue({ x: gesture.dx, y: gesture.dy });
+//       },
+//       onPanResponderRelease: (event, gesture) => {
+//         if (gesture.dx > SWIPE_THRESHOLD) {
+//           swipeCard('right');
+//         } else if (gesture.dx < -SWIPE_THRESHOLD) {
+//           swipeCard('left');
+//         } else {
+//           resetPosition();
+//         }
+//       }
+//     })
+//   ).current;
+
+//   const swipeCard = (direction) => {
+//     const x = direction === 'right' ? 1 : -1;
+//     Animated.timing(position, {
+//       toValue: { x: x * 1000, y: 0 },
+//       duration: 250
+//     }).start(() => {
+//       setCurrentIndex(nextIndex);
+//       setNextIndex(nextIndex + 1);
+//       position.setValue({ x: 0, y: 0 });
+//       direction === 'right' ? onSwipeRight() : onSwipeLeft();
+//     });
+//   };
+
+//   const resetPosition = () => {
+//     Animated.spring(position, {
+//       toValue: { x: 0, y: 0 },
+//       friction: 4,
+//       useNativeDriver: false
+//     }).start();
+//   };
+
+//   const renderCards = () => {
+//     if (currentIndex >= data.length) {
+//       return null;
+//     }
+
+//     const card = renderCard(data[currentIndex]);
+
+//     return (
+//       <Animated.View
+//         {...panResponder.panHandlers}
+//         style={[styles.cardStyle, position.getLayout()]}
+//       >
+//         {card}
+//       </Animated.View>
+//     );
+//   };
+
+//   return <View style={styles.cardStack}>{renderCards()}</View>;
+// };
+
+// const styles = StyleSheet.create({
+//   cardStack: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center'
+//   },
+//   cardStyle: {
+//     position: 'absolute',
+//     width: '100%',
+//     height: '100%'
+//   }
+// });
+
+// const Card = ({ item }) => {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>{item.name}</Text>
+//     </View>
+//   );
+// };
+
+// const App = () => {
+//   const [cards, setCards] = useState([
+//     { id: 1, name: 'Card 1' },
+//     { id: 2, name: 'Card 2' },
+//     { id: 3, name: 'Card 3' },
+//     { id: 4, name: 'Card 4' },
+//     { id: 5, name: 'Card 5' },
+//   ]);
+
+//   const handleLike = (currentCard) => {
+//     console.log('Liked', currentCard);
+//   };
+
+//   const handleDislike = (currentCard) => {
+//     console.log('Disliked', currentCard);
+//   };
+
+//   return (
+//     <View style={{ flex: 1 }}>
+//       <CardStack
+//         data={cards}
+//         renderCard={(card) => <Card item={card} />}
+//         onLike={handleLike}
+//         onDislike={handleDislike}
+//       />
+//     </View>
+//   );
+// };
+// });
