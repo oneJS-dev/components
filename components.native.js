@@ -15,7 +15,7 @@ import {
     VirtualizedList as _RNVirtualizedList, DrawerLayoutAndroid as _RNDrawerLayoutAndroid,
     TouchableNativeFeedback as _RNTouchableNativeFeedback,
     InputAccessoryView as _RNInputAccessoryView, SafeAreaView as _RNSafeAreaView,
-    Platform, Animated, Easing, Dimensions
+    Platform, Animated, Easing, Dimensions, PanResponder
 } from 'react-native';
 import React from 'react';
 
@@ -307,9 +307,10 @@ const animate = (animation, property, animationValue, setSelectedKeyframes, isVi
         if(property === 'visible' && newValue) setIsVisible(true);      //To display in animation
         if(property === 'visible' && !newValue && !isVisible) return;   //To avoid initial out animation and flickering
         setSelectedKeyframes(selectedAnimation.keyframes);              //The keyframes that will be used for the interpolation
-        animationValue.setValue(0);                                      //Animation is set to always flow from 0 to 1
+        animationValue.setValue(0);                                     //Animation is set to always flow from 0 to 1
         let options = {toValue: 1, useNativeDriver: true, ...selectedAnimation.options};
         let completedCallback = (property, newValue) => ({result}) => {
+
             if(property === 'visible' && !newValue) setIsVisible(false); //To hide element after out animation
         };
         Animated.timing(animationValue, options).start(completedCallback(property, newValue));
@@ -461,17 +462,18 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
         const externalDisplay = attributes['style']?.display ?? 'flex';
         let contentStyle = {};
         let selfStyle = {};
+        let selfAlign = {};
         if(externalDisplay === 'flex') { //Only for 'flex' display property
             contentStyle = {
-                display: visible ? 'flex' : 'none',
+                display: visible || isVisible ? 'flex' : 'none', //This line of code is immportant to display the fade out animation
                 ...positionContent(content)
             };
             selfStyle = {
-                display: visible ? 'flex' : 'none',
+                display: visible || isVisible ? 'flex' : 'none', //This line of code is immportant to display the fade out animation
                 flexGrow: self?.expand ?? 0,              //Ability for a flex item to grow if there is too much space (0 CSS default).
                 flexShrink: self?.shrink ?? 1,            //Ability for a flex item to shrink if there is not enough space (1 CSS default).  
-                // alignSelf: self?.align ?? 'auto',         //Transversal positioning of the item overriding parents content positioning.
             };
+            selfAlign = self?.align ? {alignSelf: self.align} : {}; //Transversal positioning of the item overriding parents content positioning.
         }
         const outerStyle = {//Outer style. When there is a gradient it is applied to the Gradient itself.
             borderWidth: flavor?.borderWidth ?? 0,
@@ -479,7 +481,8 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
             borderColor: flavor?.borderColor ?? 'transparent',
             borderRadius: flavor?.radius ?? 0,
             ...flavor?.shadow ?? 0,
-            ...selfStyle
+            ...selfStyle,
+            ...selfAlign
         };
         const innerStyle = {//Inner style for the View
             backgroundColor: flavor?.backgroundGradient ?
@@ -493,7 +496,7 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
             mergeStyles(innerStyle, outerStyle, attributes['style']);
 
         //Final Structure
-        let finalStructure;
+        let finalStructure; 
 
         if(animation) {//In case of animation
             if(animation.visible) {
@@ -517,6 +520,14 @@ export const View = Component('View', true, ({visible = true, content = {h: 'lef
         //url property gets substituted in core by onPress = updateUrl(url), this allows to change
         //current url on press
         if(url) finalStructure = RNTouchableOpacity({url: url})(finalStructure);
+
+        //If onPress or onClick is set use TouchableOpacity
+        if(attributes['onPress'] || attributes['onClick']) {
+            finalStructure = RNTouchableOpacity({
+                onPress: attributes['onPress'] ??
+                    attributes['onClick']
+            })(finalStructure);
+        }
 
         return finalStructure;
     });
@@ -738,8 +749,8 @@ export const Input = ({type, options, title, titleStyle, icon, iconStyle, conten
         if(flavor?.backgroundGradient) delete attributes['style'].backgroundColor;
         return RNTouchableOpacity({onPress: onPress, url: url})(
             View({content: content, flavor: flavor, ...attributes})([
-                (icon) && Icon({icon: icon, style: iconStyle, flavor: flavor}),
-                Text({style: titleStyle, flavor: flavor})(title)
+                icon && Icon({icon: icon, style: iconStyle, flavor: flavor}),
+                title && Text({style: titleStyle, flavor: flavor})(title)
             ]));
         //Note: elevation/shadow does not work well with TouchableOpacity, opacity is inconsistent when pressed 
     }
@@ -974,9 +985,9 @@ export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), 
         const contentStyle = {
             position: 'absolute',
             left: size === 'large' ? '5%' : size === 'small' ? '20%' : '10%',
-            top: size === 'large' ? '5%' : size === 'small' ? '35%' : '20%',
+            top: size === 'large' ? '2.5%' : size === 'small' ? '35%' : '20%',
             width: size === 'large' ? '90%' : size === 'small' ? '60%' : '80%',
-            height: size === 'large' ? '90%' : size === 'small' ? '30%' : '60%',
+            height: size === 'large' ? '95%' : size === 'small' ? '30%' : '60%',
             backgroundColor: 'white' // backgroundColor: 'rgba(255,255,255,0.95)', 
         };
         const closeButtonStyle = {
@@ -1034,7 +1045,7 @@ export const Modal = Component('Modal', true, ({flavor = readFlavor('default'), 
  */
 //TODO: Implement direction column
 export const Swiper = Component('Swiper', true, ({value = 0, onChange = () => {}, bullets = true,
-    direction = 'row', scroll = true, flavor = readFlavor('default'),
+    direction = 'row', scroll = true, loop = false, flavor = readFlavor('default'),
     ...attributes} = {}) => children => {
         //Navigates (scrolls) to tab on bullet press
         const onBulletPress = (index) => {
@@ -1083,6 +1094,7 @@ export const Swiper = Component('Swiper', true, ({value = 0, onChange = () => {}
             RNScrollView({
                 horizontal: true, pagingEnabled: true, showsHorizontalScrollIndicator: false,
                 scrollEnabled: scroll,
+                loop: loop,
                 onCreate: initScroll(value),
                 // onScroll: onScrollEnd,
                 onScrollEndDrag: onScrollEnd,
@@ -1101,7 +1113,7 @@ export const Swiper = Component('Swiper', true, ({value = 0, onChange = () => {}
             ]),
             //Bullets
             bullets && View({
-                style: styles.tabsContainer, content: {h: 'center', v: 'center', gap: 10}, 
+                style: styles.tabsContainer, content: {h: 'center', v: 'center', gap: 10},
                 self: {expand: 1}
             })([
                 React.Children.map(children, (child, index) => {
@@ -1115,121 +1127,555 @@ export const Swiper = Component('Swiper', true, ({value = 0, onChange = () => {}
         ]);
     });
 
-// export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('default'), onSwipe,
-//     icons, upIcon = true, onBack, size = 'medium', ...attributes} = {}) => (structure) => {
-//         const SWIPE_THRESHOLD = 120;
+const closeIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path d="M289.94,256l95-95A24,24,0,0,0,351,127l-95,95-95-95A24,24,0,0,0,
+    127,161l95,95-95,95A24,24,0,1,0,161,385l95-95,95,95A24,24,0,0,0,385,351Z"/></svg>`;
+const heartIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path d="M256,448a32,32,0,0,
+    1-18-5.57c-78.59-53.35-112.62-89.93-131.39-112.8-40-48.75-59.15-98.8-58.61-153C48.63,114.52,98.46,
+    64,159.08,64c44.08,0,74.61,24.83,92.39,45.51a6,6,0,0,0,9.06,0C278.31,
+    88.81,308.84,64,352.92,64,413.54,64,463.37,114.52,464,176.64c.54,54.21-18.63,104.26-58.61,153-18.77,
+    22.87-52.8,59.45-131.39,112.8A32,32,0,0,1,256,448Z"/></svg>`;
+const starIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path d="M394,480a16,16,0,0,1-9.39-3L256,383.76,127.39,477a16,16,0,0,1-24.55-18.08L153,310.35,23,
+    221.2A16,16,0,0,1,32,192H192.38l48.4-148.95a16,16,0,0,1,30.44,0l48.4,149H480a16,16,0,0,1,9.05,
+    29.2L359,310.35l50.13,148.53A16,16,0,0,1,394,480Z"/></svg>`;
+export const SwipeCards = Component('SwipeCards', true, ({flavor = readFlavor('default'),
+    onSwipe = () => {}, icons, upIcon = true, onBack, size = 'medium',
+    Left, Right, Up, ...attributes} = {}) => (children) => { //Left, Right and Up are components
+        const SCREEN_WIDTH = Dimensions.get('window').width;
+        const SCREEN_HEIGHT = Dimensions.get('window').height;
+        const SWIPE_THRESHOLD_X = SCREEN_WIDTH * 0.25;
+        const SWIPE_THRESHOLD_Y = SCREEN_HEIGHT * 0.25;
+        const SWIPE_OUT_DURATION = 250;
 
-// const CardStack = ({ data, renderCard, onSwipeLeft=()=>{}, onSwipeRight=()=>{} }) => {
-//   const [currentIndex, setCurrentIndex] = useState(0);
-//   const [nextIndex, setNextIndex] = useState(1);
-//   const [position] = useState(new Animated.ValueXY());
+        const [index, setIndex] = React.useState(0);
+        const position = new Animated.ValueXY();
 
-//   const panResponder = useRef(
-//     PanResponder.create({
-//       onMoveShouldSetPanResponder: (event, gesture) => Math.abs(gesture.dx) > Math.abs(gesture.dy) && Math.abs(gesture.dx) > 10,
-//       onPanResponderMove: (event, gesture) => {
-//         position.setValue({ x: gesture.dx, y: gesture.dy });
-//       },
-//       onPanResponderRelease: (event, gesture) => {
-//         if (gesture.dx > SWIPE_THRESHOLD) {
-//           swipeCard('right');
-//         } else if (gesture.dx < -SWIPE_THRESHOLD) {
-//           swipeCard('left');
-//         } else {
-//           resetPosition();
-//         }
-//       }
-//     })
-//   ).current;
+        const panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onPanResponderMove: (event, gesture) => {
+                position.setValue({x: gesture.dx, y: gesture.dy});
+            },
+            onPanResponderRelease: (event, gesture) => {
+                if(gesture.dx > SWIPE_THRESHOLD_X) {
+                    swipeCard('right');
+                } else if(gesture.dx < -SWIPE_THRESHOLD_X) {
+                    swipeCard('left');
+                }
+                else if(gesture.dy < -SWIPE_THRESHOLD_Y) {
+                    swipeCard('up');
+                }
+                else {
+                    resetPosition();
+                }
+            }
+        });
 
-//   const swipeCard = (direction) => {
-//     const x = direction === 'right' ? 1 : -1;
-//     Animated.timing(position, {
-//       toValue: { x: x * 1000, y: 0 },
-//       duration: 250
-//     }).start(() => {
-//       setCurrentIndex(nextIndex);
-//       setNextIndex(nextIndex + 1);
-//       position.setValue({ x: 0, y: 0 });
-//       direction === 'right' ? onSwipeRight() : onSwipeLeft();
-//     });
-//   };
+        const swipeCard = (direction) => {
+            const x = direction === 'right' ? SCREEN_WIDTH : direction === 'left' ? -SCREEN_WIDTH : 0;
+            const y = direction === 'up' ? -SCREEN_HEIGHT : 0;
+            Animated.timing(position, {
+                toValue: {x: x, y: y},
+                duration: SWIPE_OUT_DURATION,
+                useNativeDriver: false,
+            }).start(() => {
+                setIndex(index + 1);
+                position.setValue({x: 0, y: 0});
+                onSwipe(direction);
+            });
+        };
 
-//   const resetPosition = () => {
-//     Animated.spring(position, {
-//       toValue: { x: 0, y: 0 },
-//       friction: 4,
-//       useNativeDriver: false
-//     }).start();
-//   };
+        const resetPosition = () => {
+            Animated.spring(position, {
+                toValue: {x: 0, y: 0},
+                friction: 4,
+                useNativeDriver: false
+            }).start();
+        };
 
-//   const renderCards = () => {
-//     if (currentIndex >= data.length) {
-//       return null;
-//     }
+        const getCardStyle = () => {
+            const rotate = position.x.interpolate({
+                inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
+                outputRange: ['-120deg', '0deg', '120deg'],
+            });
+            const opacity = position.x.interpolate({
+                inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
+                outputRange: [0.5, 1, 0.5],
+                extrapolate: 'clamp',
+            });
 
-//     const card = renderCard(data[currentIndex]);
+            return {
+                ...position.getLayout(),
+                transform: [{rotate}],
+                opacity: opacity
+            };
+        };
 
-//     return (
-//       <Animated.View
-//         {...panResponder.panHandlers}
-//         style={[styles.cardStyle, position.getLayout()]}
-//       >
-//         {card}
-//       </Animated.View>
-//     );
-//   };
+        const getIconStyle = (direction) => {
+            if(direction === 'left') {
+                const scaleLeft = position.x.interpolate({
+                    inputRange: [-SCREEN_WIDTH, -SWIPE_THRESHOLD_X, -SWIPE_THRESHOLD_X * 0.9, 0, SWIPE_THRESHOLD_X * 0.9, SWIPE_THRESHOLD_X, SCREEN_WIDTH],
+                    outputRange: [1.4, 1, 1, 1, 1, 0, 0],
+                    extrapolate: 'clamp',
+                });
+                const opacityLeftt = position.x.interpolate({
+                    inputRange: [-SCREEN_WIDTH, -SWIPE_THRESHOLD_X * 1.1, -SWIPE_THRESHOLD_X, 0],
+                    outputRange: [1, 1, 0.8, 0.8],
+                    extrapolate: 'clamp',
+                });
+                return {opacity: opacityLeftt, transform: [{scale: scaleLeft}]};
+            }
+            else if(direction === 'right') {
+                const scaleRight = position.x.interpolate({
+                    inputRange: [-SCREEN_WIDTH, -SWIPE_THRESHOLD_X, -SWIPE_THRESHOLD_X * 0.9, 0, SWIPE_THRESHOLD_X * 0.9, SWIPE_THRESHOLD_X, SCREEN_WIDTH],
+                    outputRange: [0, 0, 1, 1, 1, 1, 1.4],
+                    extrapolate: 'clamp', 
+                });
+                const opacityRight = position.x.interpolate({
+                    inputRange: [SWIPE_THRESHOLD_X, SWIPE_THRESHOLD_X * 1.1, SCREEN_WIDTH],
+                    outputRange: [0.8, 1, 1],
+                    extrapolate: 'clamp',
+                });
+                return {opacity: opacityRight, transform: [{scale: scaleRight}]};
+            }
+            else if(direction === 'up') {
+                const scaleLeftRight = position.x.interpolate({
+                    inputRange: [-SCREEN_WIDTH, -SWIPE_THRESHOLD_X, -SWIPE_THRESHOLD_X * 0.9, 0, SWIPE_THRESHOLD_X * 0.9, SWIPE_THRESHOLD_X, SCREEN_WIDTH],
+                    outputRange: [0, 0, 1, 1, 1, 0, 0],
+                    extrapolate: 'clamp',
+                });
+                const scaleUp = position.y.interpolate({
+                    inputRange: [-SCREEN_HEIGHT, -SWIPE_THRESHOLD_Y, 0],
+                    outputRange: [1.4, 1, 1],
+                    extrapolate: 'clamp',
+                    easing: Easing.back(),
+                });
+                const opacityUp = position.y.interpolate({
+                    inputRange: [-SCREEN_HEIGHT, -SWIPE_THRESHOLD_Y * 1.1, -SWIPE_THRESHOLD_Y, 0],
+                    outputRange: [1, 1, 0.8, 0.8],
+                    extrapolate: 'clamp',
+                    easing: Easing.back(),
+                });
+                return {opacity: opacityUp, transform: [{scale: Animated.multiply(scaleUp, scaleLeftRight)}]};
+            }
+        };
 
-//   return <View style={styles.cardStack}>{renderCards()}</View>;
-// };
+        const styles = {
+            container: {
+                minWidth: 150,
+                minHeight: 150,
+                width: 350,
+                height: 600,
+                backgroundColor: 'pink',
+                alignSelf: 'stretch'
+            },
+            cardStyle: {
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: flavor?.backgroundColor ?? 'white',
+                borderRadius: flavor?.radius ?? 0,
+                borderWidth: flavor?.borderWidth ?? 1,
+                borderStyle: flavor?.borderStyle ?? 'solid',
+                borderColor: flavor?.borderColor ?? '#666',
+                shadowColor: '#000',
+                shadowOpacity: 0.3,
+                shadowRadius: 5,
+                shadowOffset: {width: 0, height: 2, },
+                elevation: 5
+            },
+            icons: {
+                position: 'absolute',
+                bottom: 10,
+                width: '100%',
+            }
+        };
 
-// const styles = StyleSheet.create({
-//   cardStack: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center'
-//   },
-//   cardStyle: {
-//     position: 'absolute',
-//     width: '100%',
-//     height: '100%'
-//   }
-// });
+        return View({style: styles.container, ...attributes})([
+            React.Children.map(children, (child, i) => {
+                // map((item, i) => {
+                if(i < index) {
+                    return null;
+                }
+                if(i === index) {
+                    return RNAnimatedView({
+                        key: i,
+                        style: [getCardStyle(), styles.cardStyle],
+                        ...panResponder.panHandlers
+                    })(child);
+                }
+                return RNAnimatedView({
+                    key: i,
+                    style: [styles.cardStyle, (i - index) > 0 && {top: 10}],
+                })(child);
+            }).reverse(),
+            View({style: styles.icons, content: {h: 'center', v: 'center', gap: 10}, self: {expand: 1}})([
+                RNAnimatedView({style: [styles.icon, getIconStyle('left')]})(
+                    View({
+                        flavor: flavor, onPress: () => {swipeCard('left');}
+                    })(Icon({
+                        icon: closeIcon, size: 48,
+                        flavor: {
+                            primaryColor: flavor?.rejectColor ?? 'red'
+                        }
+                    }))
+                ),
+                RNAnimatedView({style: [styles.icon, getIconStyle('up')]})(
+                    View({
+                        flavor: flavor, onPress: () => {swipeCard('up');}
+                    })(Icon({
+                        icon: starIcon, size: 48,
+                        flavor: {
+                            primaryColor: flavor?.primaryColor ?? 'blue'
+                        }
+                    }))
+                ),
+                RNAnimatedView({style: [styles.icon, getIconStyle('right')]})(
+                    View({
+                        flavor: flavor, onPress: () => {swipeCard('right');}
+                    })(Icon({
+                        icon: heartIcon, size: 48,
+                        flavor: {
+                            primaryColor: flavor?.acceptColor ?? 'green'
+                        }
+                    }))
+                ),
+                // View({style: styles.icon, flavor: flavor, onPress: () => {swipeCard('up');}})(Icon({icon: starIcon, size: 48, flavor: {primaryColor: flavor?.primaryColor ?? 'blue'}})),
+                // View({style: styles.icon, flavor: flavor, onPress: () => {swipeCard('right');}})(Icon({icon: heartIcon, size: 48, flavor: {primaryColor: flavor?.acceptColor ?? 'green'}}))
+            ]),
+        ]);
+    });
 
-// const Card = ({ item }) => {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>{item.name}</Text>
-//     </View>
-//   );
-// };
+const amIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path d="M256,118a22,22,0,0,1-22-22V48a22,22,0,0,1,44,0V96A22,22,0,0,1,256,118Z"/>
+    <path d="M256,486a22,22,0,0,1-22-22V416a22,22,0,0,1,44,0v48A22,22,0,0,1,256,486Z"/>
+    <path d="M369.14,164.86a22,22,0,0,1-15.56-37.55l33.94-33.94a22,22,0,0,1,31.11,31.11l-33.94,
+    33.94A21.93,21.93,0,0,1,369.14,164.86Z"/><path d="M108.92,425.08a22,22,0,0,
+    1-15.55-37.56l33.94-33.94a22,22,0,1,1,31.11,31.11l-33.94,33.94A21.94,21.94,0,0,1,
+    108.92,425.08Z"/><path d="M464,278H416a22,22,0,0,1,0-44h48a22,22,0,0,1,0,44Z"/>
+    <path d="M96,278H48a22,22,0,0,1,0-44H96a22,22,0,0,1,0,44Z"/><path d="M403.08,425.08a21.94,
+    21.94,0,0,1-15.56-6.45l-33.94-33.94a22,22,0,0,1,31.11-31.11l33.94,33.94a22,22,0,0,
+    1-15.55,37.56Z"/><path d="M142.86,164.86a21.89,21.89,0,0,1-15.55-6.44L93.37,124.48a22,22,0,0,1,
+    31.11-31.11l33.94,33.94a22,22,0,0,1-15.56,37.55Z"/><path d="M256,358A102,102,0,1,1,358,256,
+    102.12,102.12,0,0,1,256,358Z"/></svg>`;
+const pmIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path d="M264,480A232,232,0,0,1,32,248C32,154,86,69.72,169.61,33.33a16,16,0,0,1,21.06,
+    21.06C181.07,76.43,176,104.66,176,136c0,110.28,89.72,200,200,200,31.34,0,59.57-5.07,
+    81.61-14.67a16,16,0,0,1,21.06,21.06C442.28,426,358,480,264,480Z"/></svg>`;
 
-// const App = () => {
-//   const [cards, setCards] = useState([
-//     { id: 1, name: 'Card 1' },
-//     { id: 2, name: 'Card 2' },
-//     { id: 3, name: 'Card 3' },
-//     { id: 4, name: 'Card 4' },
-//     { id: 5, name: 'Card 5' },
-//   ]);
+//TODO: implement modal pop up option
+export const Clock = Component('Clock', false, ({value = new Date(), onChange = () => {}, modal,
+    valueDisplay = true, onClose = () => {}, flavor = readFlavor('default'), ...attributes} = {}) => {
 
-//   const handleLike = (currentCard) => {
-//     console.log('Liked', currentCard);
-//   };
+    const selectedHour = value.getHours().toString().padStart(2, '0');
+    const selectedMinute = (Math.ceil(value.getMinutes() / 5) * 5).toString().padStart(2, '0');
+    const selectedMeridiem = selectedHour < 12 ? 'am' : 'pm';
 
-//   const handleDislike = (currentCard) => {
-//     console.log('Disliked', currentCard);
-//   };
+    //State is required to update the display on property changes
+    const [hourState, setHourState] = React.useState(selectedHour);
+    const [minuteState, setMinuteState] = React.useState(selectedMinute);
 
-//   return (
-//     <View style={{ flex: 1 }}>
-//       <CardStack
-//         data={cards}
-//         renderCard={(card) => <Card item={card} />}
-//         onLike={handleLike}
-//         onDislike={handleDislike}
-//       />
-//     </View>
-//   );
-// };
-// });
+    const hours = selectedMeridiem === 'am' ?
+        ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'] :
+        ['12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+    const minutes = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+
+    const styles = {
+        timeText: {
+            fontSize: flavor?.textSize * 2 ?? 32,
+        },
+        hourMinuteContainer: {
+            width: 155,
+            paddingBottom: 7
+        },
+        hourMinuteHeader: {
+            width: '100%',
+            borderBottomWidth: 1,
+            borderBottomStyle: 'solid',
+            borderBottomColor: flavor?.borderColor ?? '#ccc'
+        },
+        hourMinuteHeaderText: {
+            fontSize: flavor?.textSize * 1.2 ?? 20,
+        },
+        pressable: {
+            width: 40,
+            height: 30,
+            backgroundColor: flavor?.lightColor ?? '#ccc',
+        },
+        pressableSelected: {
+            backgroundColor: flavor?.primaryColor ?? 'blue',
+            borderColor: flavor?.primaryColor ?? 'blue',
+        },
+        pressableTextSelected: {
+            color: flavor?.lightColor ?? 'white'
+        },
+        amPmContainer: {
+            width: 50,
+        },
+    };
+
+    return View({content: {direction: 'column', h: 'center', v: 'center'}})([
+        //Selected Time
+        valueDisplay && View()([
+            Icon({icon: selectedMeridiem === 'am' ? amIcon : pmIcon, flavor: flavor}),
+            Text({flavor: flavor, style: styles.timeText})(hourState + ':' + minuteState)
+        ]),
+
+        //Input Panel
+        View({content: {direction: 'row', h: 'center', v: 'center', gap: 5}})([
+            //Hours
+            View({
+                content: {direction: 'row', wrap: true, h: 'center', v: 'top', gap: 7},
+                flavor: flavor, style: styles.hourMinuteContainer
+            })([
+                //Hour header
+                View({
+                    content: {v: 'center', h: 'center'}, style: styles.hourMinuteHeader
+                })(Text({flavor: flavor, style: styles.hourMinuteHeaderText})('hour')),
+                //Hour inputs
+                hours.map(hour => {
+                    return View({
+                        content: {h: 'center', v: 'center'}, key: hour, flavor: flavor,
+                        style: [styles.pressable, hour === selectedHour && styles.pressableSelected],
+                        onPress: () => {
+                            if(hour === selectedHour) return;
+                            value.setHours(Number(hour));
+                            value.setMinutes(Number(selectedMinute));
+                            onChange(value);
+                            setHourState(hour);
+                        }
+                    })(Text({
+                        flavor: flavor, style: hour === selectedHour && styles.pressableTextSelected
+                    })(hour));
+                })
+            ]),
+            //Meridiem
+            View({
+                content: {direction: 'column', h: 'center', v: 'distribute', gap: 5},
+                style: styles.amPmContainer
+            })([
+                View({
+                    content: {direction: 'row', h: 'center', v: 'center', gap: 0}, flavor: flavor,
+                    style: [styles.pressable, 'am' === selectedMeridiem && styles.pressableSelected],
+                    onPress: () => {
+                        if('am' === selectedMeridiem) return;
+                        const hourNumber = Number(selectedHour) - 12;
+                        const hourString = hourNumber.toString().padStart(2, '0');
+                        value.setHours(hourNumber);
+                        onChange(value);
+                        setHourState(hourString);
+                    }
+                })([
+                    // Icon({icon: icons['sunny']}),
+                    Text({
+                        flavor: flavor,
+                        style: 'am' === selectedMeridiem && styles.pressableTextSelected
+                    })('am')
+                ]),
+                View({
+                    content: {direction: 'row', h: 'center', v: 'center', gap: 0}, flavor: flavor,
+                    style: [styles.pressable, 'pm' === selectedMeridiem && styles.pressableSelected],
+                    onPress: () => {
+                        if('pm' === selectedMeridiem) return;
+                        const hourNumber = Number(selectedHour) + 12;
+                        const hourString = hourNumber.toString().padStart(2, '0');
+                        value.setHours(hourNumber);
+                        onChange(value);
+                        setHourState(hourString);
+                    }
+                })([
+                    // Icon({icon: icons['sunny']}),
+                    Text({
+                        flavor: flavor,
+                        style: 'pm' === selectedMeridiem && styles.pressableTextSelected
+                    })('pm')
+                ])
+            ]),
+            //Minutes
+            View({
+                content: {direction: 'row', wrap: true, h: 'center', v: 'top', gap: 7},
+                flavor: flavor, style: styles.hourMinuteContainer
+            })([
+                //Minute Header
+                View({
+                    content: {v: 'center', h: 'center'}, style: styles.hourMinuteHeader
+                })(Text({flavor: flavor, style: styles.hourMinuteHeaderText})('minute')),
+                //Minute input
+                minutes.map(minute => {
+                    return View({
+                        content: {h: 'center', v: 'center'}, key: minute, flavor: flavor,
+                        style: [styles.pressable, minute === selectedMinute && styles.pressableSelected],
+                        onPress: () => {
+                            if(minute === selectedMinute) return;
+                            value.setHours(Number(selectedHour));
+                            value.setMinutes(Number(minute));
+                            onChange(value);
+                            setMinuteState(minute);
+                        }
+                    })(Text({
+                        flavor: flavor,
+                        style: minute === selectedMinute && styles.pressableTextSelected
+                    })(minute));
+                })
+            ]),
+        ])
+    ]);
+});
+// const months = Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString('default', { month: 'long' }));
+
+export const Calendar = Component('Calendar', false, ({value = new Date(), onChange = () => {},
+    modal, valueDisplay, mondayFirst = true, onClose = () => {}, flavor = readFlavor('default'),
+    ...attributes} = {}) => {
+    //Get month names in local language
+    const monthNames = Array.from({length: 12},
+        (_, i) => new Date(0, i + 1).toLocaleString(undefined, {month: 'long', year: undefined}));
+
+    const weekdayNames = Array.from({length: 7},
+        (_, i) => new Intl.DateTimeFormat(undefined,
+            {weekday: 'short'}).format(new Date(2000, 0, i + (mondayFirst ? 3 : 2))));
+
+    //Generates the date array
+    const dataGenerator = (year, month) => {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const date = new Date(year, month, 1);
+        const weekday = date.getDay(); //0 is Sunday, 1 Monday, etc.
+        const weekdayStart = mondayFirst ? (weekday === 0 ? 6 : weekday - 1) : weekday;
+        const key = year + '-' + month;
+        const dateArray = Array.from({length: weekdayStart},
+            () => 0).concat(Array.from({length: daysInMonth}, (_, i) => i + 1));
+        return {key: key, dateArray: dateArray, month: date.getMonth(), year: date.getFullYear()};
+    };
+
+    //Get value date's month and year
+    const year = value.getFullYear();
+    const month = value.getMonth();
+    const selectedDate = value.getDate();
+    const [data, setData] = React.useState(dataGenerator(year, month));
+
+    const styles = {
+        calendarPage: {
+            width: 360,
+            // height: 340,
+            paddingLeft: 5,
+            paddingVertical: 5,
+            columnGap: 10,
+            rowGap: 5
+        },
+        header: {
+            borderBottomWidth: 1,
+            borderBottomStyle: 'solid',
+            borderBottomColor: flavor?.borderColor ?? '#ccc',
+            padding: 5
+        },
+        footer: {
+            borderTopWidth: 1,
+            borderTopStyle: 'solid',
+            borderTopColor: flavor?.borderColor ?? '#ccc',
+            padding: 5
+        },
+        headerFooterText: {
+            fontSize: flavor?.textSize * 1.2 ?? 20,
+        },
+        pressable: {
+            width: 40,
+            height: 30,
+            backgroundColor: flavor?.lightColor ?? '#ccc',
+        },
+        pressableSelected: {
+            backgroundColor: flavor?.primaryColor ?? 'blue',
+            borderColor: flavor?.primaryColor ?? 'blue',
+        },
+        pressableTextSelected: {
+            color: flavor?.lightColor ?? 'white'
+        },
+        nextPrev: {
+            backgroundColor: flavor?.lightColor ?? '#ccc',
+            color: flavor.primaryColor,
+            width: 120,
+            minHeight: 30
+        },
+        weekday: {
+            width: 40,
+        },
+        weekdayText: {
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            fontSize: Math.round(flavor.textSize * 0.9)
+        }
+    };
+
+    const changeData = (monthDelta) => {
+        setData(dataGenerator(data.year, data.month + monthDelta));
+    };
+
+    const isSelected = (date) => {
+        if(data.year !== value.getFullYear()) return false;
+        if(data.month !== value.getMonth()) return false;
+        if(selectedDate !== date) return false;
+        return true;
+    };
+
+    return View({
+        style: styles.container, content: {direction: 'column', h: 'stretch', v: 'top'},
+        flavor: flavor, ...attributes
+    })([
+        View({content: {h: 'space', v: 'center'}, style: styles.header})([
+            Input({
+                type: 'button', title: 'previous', flavor: flavor, style: styles.nextPrev,
+                onPress: () => {changeData(-1);}
+            }),
+            Text({flavor: flavor, style: styles.headerFooterText})(monthNames[data.month]),
+            Input({
+                type: 'button', title: 'next', flavor: flavor, style: styles.nextPrev,
+                onPress: () => {changeData(+1);}
+            })
+        ]),
+        View({
+            content: {direction: 'row', h: 'left', v: 'distribute', wrap: true},
+            style: styles.calendarPage
+        })([
+            weekdayNames.map((weekday, index) => {
+                return View({
+                    style: styles.weekday,
+                    key: weekday,
+                    content: {h: 'center', v: 'center'},
+                })(
+                    Text({flavor: flavor, style: styles.weekdayText})(weekday)
+                );
+
+            }),
+            data.dateArray.map((date, index) => {
+                if(date < 1) return View({
+                    key: index, style: {...styles.pressable, backgroundColor: 'transparent'}
+                })();
+                else return View({
+                    style: [styles.pressable, isSelected(date) && styles.pressableSelected],
+                    key: index, onPress: () => {
+                        const newDate = new Date(data.year, data.month, date);
+                        //Maintain the time from the value
+                        newDate.setHours(value.getHours());
+                        newDate.setMinutes(value.getMinutes());
+                        onChange(newDate);
+                    },
+                    content: {h: 'center', v: 'center'}, flavor: flavor
+                })(
+                    Text({
+                        flavor: flavor, style: isSelected(date) && styles.pressableTextSelected
+                    })(date)
+                );
+            })
+        ]),
+        View({content: {h: 'space', v: 'center'}, style: styles.footer})([
+            Input({
+                type: 'button', title: data.year - 1, flavor: flavor, style: styles.nextPrev,
+                onPress: () => {changeData(-12);}
+            }),
+            Text({flavor: flavor, style: styles.headerFooterText})(data.year),
+            Input({
+                type: 'button', title: data.year + 1, flavor: flavor, style: styles.nextPrev,
+                onPress: () => {changeData(+12);}
+            })
+        ]),
+    ]);
+});

@@ -454,7 +454,7 @@ export const View = ({type, visible = true, onVisibleChange = () => {}, active =
                 if(property === 'intersect') {
                     attributes['onCreate'] = (component) => {
                         if(!component) return;
-                        //Needs to be 'visible' to ocupy space and intersect with the screen but  
+                        //Needs to be 'visible' to occupy space and intersect with the screen but  
                         //transparent. When the animation finished, the 'opacity' property is
                         //removed
                         component.style.opacity = 0;
